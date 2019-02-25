@@ -1,3 +1,4 @@
+import checkout.AnyGoodsOffer;
 import checkout.Check;
 import checkout.CheckoutService;
 import checkout.Product;
@@ -57,5 +58,26 @@ public class CheckoutServiceTest {
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(10));
+    }
+
+    @Test
+    void useOffer__addOfferPoints() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        checkoutService.useOffer(new AnyGoodsOffer(6, 2));
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(12));
+    }
+
+    @Test
+    void useOffer__whenCostLessThanRequired__doNothing() {
+        checkoutService.addProduct(bred_3);
+
+        checkoutService.useOffer(new AnyGoodsOffer(6, 2));
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(3));
     }
 }
