@@ -9,15 +9,19 @@ public class CheckoutService {
     }
 
     public void addProduct(Product product) {
-        if (check == null) {
+        if (isClosed()) {
             openCheck();
         }
         check.addProduct(product);
     }
 
     public Check closeCheck() {
-        Check closedCheck = check;
+        final Check result = check;
         check = null;
-        return closedCheck;
+        return result;
+    }
+
+    private boolean isClosed() {
+        return check == null;
     }
 }
