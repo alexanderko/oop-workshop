@@ -30,4 +30,17 @@ public class CheckoutServiceTest {
 
         assertThat(check.getTotalCost(), is(10));
     }
+
+    @Test
+    void addProduct__whenCheckIsClosed__opensNewCheck() {
+        CheckoutService checkoutService = new CheckoutService();
+
+        checkoutService.addProduct(new Product(7, "Milk"));
+        Check milkCheck = checkoutService.closeCheck();
+        assertThat(milkCheck.getTotalCost(), is(7));
+
+        checkoutService.addProduct(new Product(3, "Bred"));
+        Check bredCheck = checkoutService.closeCheck();
+        assertThat(bredCheck.getTotalCost(), is(3));
+    }
 }
