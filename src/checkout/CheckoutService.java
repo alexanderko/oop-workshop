@@ -2,7 +2,7 @@ package checkout;
 
 public class CheckoutService {
 
-    private Check check;
+    private Check check = new Check();
 
     public void openCheck() {
         check = new Check();
@@ -13,6 +13,9 @@ public class CheckoutService {
     }
 
     public Check closeCheck() {
-        return check;
+        Check oldCheck = check;
+        openCheck();
+        return oldCheck;
     }
+
 }
