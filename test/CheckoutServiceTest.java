@@ -1,7 +1,4 @@
-import checkout.AnyGoodsOffer;
-import checkout.Check;
-import checkout.CheckoutService;
-import checkout.Product;
+import checkout.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +16,7 @@ public class CheckoutServiceTest {
         checkoutService = new CheckoutService();
         checkoutService.openCheck();
 
-        milk_7 = new Product(7, "Milk");
+        milk_7 = new Product(7, "Milk", Category.MILK);
         bred_3 = new Product(3, "Bred");
     }
 
@@ -79,5 +76,17 @@ public class CheckoutServiceTest {
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(3));
+    }
+
+    @Test
+    void useOffer__factorByCategory() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2));
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(31));
     }
 }
