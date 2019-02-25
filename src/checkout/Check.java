@@ -18,5 +18,7 @@ public class Check {
         products.add(product);
     }
 
-
+    public int getTotalPoints() {
+        return getTotalCost();
+    }
 }
