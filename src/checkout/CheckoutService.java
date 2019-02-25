@@ -9,10 +9,15 @@ public class CheckoutService {
     }
 
     public void addProduct(Product product) {
+        if (check == null) {
+            openCheck();
+        }
         check.addProduct(product);
     }
 
     public Check closeCheck() {
-        return check;
+        Check closedCheck = check;
+        check = null;
+        return closedCheck;
     }
 }
