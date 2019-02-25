@@ -1,3 +1,5 @@
+package checkout;
+
 public class Product {
     final int price;
     final String name;

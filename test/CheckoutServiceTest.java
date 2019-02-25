@@ -1,3 +1,6 @@
+import checkout.Check;
+import checkout.CheckoutService;
+import checkout.Product;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
