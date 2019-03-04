@@ -1,11 +1,16 @@
 package checkout;
 
-public abstract class Offer {
-    //public Time ExplorationTime;
 
-    void applyOffer(Check check) {
-        if (isSatisfiedConditionals(check)) {
-            applyReward(check);
+import java.time.LocalDate;
+
+public abstract class Offer {
+    public LocalDate explorationTime;
+
+    void applyOffer(Check check, LocalDate currentDate) {
+        if (currentDate.isBefore(explorationTime)) {
+            if (isSatisfiedConditionals(check)) {
+                applyReward(check);
+            }
         }
     }
 

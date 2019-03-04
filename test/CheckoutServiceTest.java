@@ -89,4 +89,19 @@ public class CheckoutServiceTest {
 
         assertThat(check.getTotalPoints(), is(31));
     }
+
+    @Test
+    void useOffer__pastItsExpirationDate__doNothing() {
+
+    }
+
+    @Test
+    void useOffer__whenItsActive() {
+
+    }
+
+    @Test
+    void useOffer__whenItsExpirationEqualToCurrent() {
+
+    }
 }

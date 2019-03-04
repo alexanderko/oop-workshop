@@ -1,7 +1,10 @@
 package checkout;
 
+import java.time.LocalDate;
+
 public class CheckoutService {
 
+    private LocalDate currentDate;
     private Check check;
 
     public void openCheck() {
@@ -22,6 +25,6 @@ public class CheckoutService {
     }
 
     public void useOffer(Offer offer) {
-        offer.applyOffer(check);
+        offer.applyOffer(check, currentDate);
     }
 }
