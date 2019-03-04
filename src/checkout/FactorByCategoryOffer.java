@@ -1,5 +1,7 @@
 package checkout;
 
+import java.time.LocalDate;
+
 public class FactorByCategoryOffer extends Offer {
     final Category category;
     final int factor;
@@ -9,8 +11,9 @@ public class FactorByCategoryOffer extends Offer {
         this.factor = factor;
     }
 
+
     @Override
-    public void apply(Check check) {
+    public void applyReword(Check check) {
         int points = check.getCostByCategory(category);
         check.addPoints(points * (factor - 1));
     }

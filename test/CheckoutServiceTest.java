@@ -2,6 +2,8 @@ import checkout.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Month;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -88,5 +90,35 @@ public class CheckoutServiceTest {
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(31));
+    }
+
+
+    @Test
+    void useOffer__checkDateExpiration__FactorByCategoryOffer() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        FactorByCategoryOffer spOffer = new FactorByCategoryOffer(Category.MILK, 2);
+        spOffer.setExpireDate(1992, Month.JUNE, 23);
+
+        checkoutService.useOffer(spOffer);
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(17));
+    }
+
+    @Test
+    void useOffer__checkDateExpiration__AnyGoodsOffer() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        AnyGoodsOffer spOffer = new AnyGoodsOffer(6, 2);
+        spOffer.setExpireDate(1950, Month.JANUARY, 10);
+
+        checkoutService.useOffer(spOffer);
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(10));
     }
 }

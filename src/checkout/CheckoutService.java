@@ -22,6 +22,6 @@ public class CheckoutService {
     }
 
     public void useOffer(Offer offer) {
-        offer.apply(check);
+        offer.applyOffer(check);
     }
 }
