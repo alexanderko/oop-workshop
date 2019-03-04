@@ -10,7 +10,13 @@ public class FactorByCategoryOffer extends Offer {
     }
 
     @Override
-    public void apply(Check check) {
+    public boolean isSatisfiedConditionals(Check check) {
+        return true;
+    }
 
+    @Override
+    public void applyReward(Check check) {
+        int points = check.getCostByCategory(this.category);
+        check.addPoints(points * (this.factor - 1));
     }
 }

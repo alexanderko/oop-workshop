@@ -10,7 +10,13 @@ public class AnyGoodsOffer extends Offer {
     }
 
     @Override
-    public void apply(Check check) {
+    public boolean isSatisfiedConditionals(Check check) {
+        return true;
+    }
 
+    @Override
+    public void applyReward(Check check) {
+        if (this.totalCost <= check.getTotalCost())
+            check.addPoints(this.points);
     }
 }
