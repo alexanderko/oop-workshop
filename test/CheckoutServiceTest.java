@@ -121,4 +121,23 @@ public class CheckoutServiceTest {
 
         assertThat(check.getTotalPoints(), is(10));
     }
+
+
+    @Test
+    void useOffer__HalfPriceOffer() {
+        Product apple_10 = new Product(10, "Apple", Category.FRUIT);
+        Product cabage_4 = new Product(4, "Cabage", Category.VEGETABLE);
+        Product veal_15 = new Product(15, "Veal", Category.MEET);
+
+
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(apple_10);
+        checkoutService.addProduct(cabage_4);
+        checkoutService.addProduct(veal_15);
+
+        checkoutService.useOffer(new HalfPriceOffer(Category.FRUIT));
+
+        Check check = checkoutService.closeCheck();
+        assertThat(check.getTotalCost(), is(31));
+    }
 }

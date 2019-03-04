@@ -33,4 +33,8 @@ public class Check {
                 .mapToInt(p -> p.price)
                 .reduce(0, (a, b) -> a + b);
     }
+
+    public List<Product> getProducts() {
+        return this.products;
+    }
 }
