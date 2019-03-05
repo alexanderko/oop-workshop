@@ -127,4 +127,16 @@ public class CheckoutServiceTest {
 
         assertThat(check.getTotalPoints(), is(18));
     }
+
+    @Test
+    void useOffer__saleByCategory() {
+        checkoutService.useOffer(new Offer(new ByCategoryCondition(Category.MILK, 2), new SaleByCategoryReward(Category.MILK, .5f)));
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(10));
+    }
 }
