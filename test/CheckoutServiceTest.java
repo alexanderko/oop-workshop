@@ -13,14 +13,14 @@ public class CheckoutServiceTest {
     private CheckoutService checkoutService;
     private Product bred_3;
     private Product paper_4_by_Lasca;
-    private Outlet lasca;
+    private Trademark lasca;
 
     @BeforeEach
     void setUp() {
         checkoutService = new CheckoutService();
         checkoutService.openCheck();
 
-        lasca = new Outlet("Lasca");
+        lasca = new Trademark("Lasca");
         milk_7 = new Product(7, "Milk", Category.MILK);
         bred_3 = new Product(3, "Bred");
         paper_4_by_Lasca = new Product(4, "Paper", null, lasca);

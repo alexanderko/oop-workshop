@@ -2,23 +2,23 @@ package checkout;
 
 import java.util.Objects;
 
-public class Outlet {
+public class Trademark {
     final String name;
 
-    public Outlet(String name) {
+    public Trademark(String name) {
         this.name = name;
     }
 
-    public static Outlet getDefaultOutlet() {
-        return new Outlet("Default");
+    public static Trademark getDefaultOutlet() {
+        return new Trademark("Default");
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Outlet outlet = (Outlet) o;
-        return Objects.equals(name, outlet.name);
+        Trademark trademark = (Trademark) o;
+        return Objects.equals(name, trademark.name);
     }
 
     @Override

@@ -17,8 +17,8 @@ public class Condition {
         return check -> check.getProducts().stream().anyMatch(product::equals);
     }
 
-    public static Predicate<Check> hasOutlet(Outlet outlet) {
-        return check -> check.getProducts().stream().map(product -> product.outlet).anyMatch(outlet::equals);
+    public static Predicate<Check> hasOutlet(Trademark trademark) {
+        return check -> check.getProducts().stream().map(product -> product.trademark).anyMatch(trademark::equals);
     }
 
 }
