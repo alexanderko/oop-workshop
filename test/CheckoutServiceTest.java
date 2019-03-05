@@ -106,7 +106,7 @@ public class CheckoutServiceTest {
     }
 
     @Test
-    void useOffer__add__offer__before__add__all__product() {
+    void useOffer__whenAddOfferBeforeAllProduct__offerMustApplyForAllProduct() {
         checkoutService.addProduct(milk_7);
         checkoutService.useOffer(factorPointsByCategoryNotExpired);
         checkoutService.addProduct(milk_7);
@@ -118,7 +118,7 @@ public class CheckoutServiceTest {
     }
 
     @Test
-    void useOffer__expiredDate__with__one__not__expired__offer() {
+    void useOffers__whenOneFromThreeOffersNotExpired__applyOnlyNotExpiredOffers() {
         checkoutService.addProduct(milk_7);
         checkoutService.useOffer(factorPointsByCategoryExpired);
         checkoutService.addProduct(milk_7);
@@ -132,7 +132,7 @@ public class CheckoutServiceTest {
     }
 
     @Test
-    void useOffer__expiredDate__with__two__not__expired__offer() {
+    void useOffers__whenTwoFromThreeOffersNotExpired__applyOnlyNotExpiredOffers() {
         checkoutService.addProduct(milk_7);
         checkoutService.useOffer(factorPointsByCategoryExpired);
         checkoutService.addProduct(milk_7);
@@ -146,22 +146,7 @@ public class CheckoutServiceTest {
     }
 
     @Test
-    void useOffer__expiredDate__with__three__not__expired__offer() {
-        checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(factorPointsByCategoryExpired);
-        checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(factorPointsByCategoryNotExpired);
-        checkoutService.addProduct(bred_3);
-        checkoutService.useOffer(factorPointsByCategoryNotExpired);
-        checkoutService.useOffer(factorPointsByCategoryNotExpired);
-
-        Check check = checkoutService.closeCheck();
-
-        assertThat(check.getTotalPoints(), is(59));
-    }
-
-    @Test
-    void combinedOffer__one__condition__and__reward() {
+    void totalCostGreatThenAndAddPoints__applyOffer() {
         checkoutService.useOffer(
                 new Offer(Conditions.totalCostGreatThen(15), Rewards.addPoints(10), nextDay)
         );
@@ -175,7 +160,7 @@ public class CheckoutServiceTest {
     }
 
     @Test
-    void combinedOffer__two__condition__and__one__reward() {
+    void ConditionsAndRewards__whenAddOneCondition__applyAdditionalOffer() {
         Offer offer = new Offer(Conditions.totalCostGreatThen(15), Rewards.addPoints(20), nextDay);
         offer.addCondition(Conditions.categoryEqualsTo(Category.MILK));
         checkoutService.useOffer(offer);
@@ -189,8 +174,8 @@ public class CheckoutServiceTest {
     }
 
     @Test
-    void combinedOffer__condition__by__outlet() {
-        checkoutService.useOffer(new Offer(Conditions.hasOutlet(lasca), Rewards.discount(50), nextDay));
+    void hasTrademarkAndDiscount__applyOffer() {
+        checkoutService.useOffer(new Offer(Conditions.hasTrademark(lasca), Rewards.discount(50), nextDay));
         checkoutService.addProduct(paper_4_by_Lasca);
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
@@ -201,7 +186,7 @@ public class CheckoutServiceTest {
     }
 
     @Test
-    void combinedOffer__condition__by__product() {
+    void hasProductAndFactorPoints__applyOffer() {
         checkoutService.useOffer(new Offer(Conditions.hasProduct(milk_7), Rewards.factorPoints(2), nextDay));
         checkoutService.addProduct(paper_4_by_Lasca);
         checkoutService.addProduct(milk_7);
@@ -213,7 +198,7 @@ public class CheckoutServiceTest {
     }
 
     @Test
-    void combinedOffer__two__reward() {
+    void addReward__applyAddictionReward() {
         Offer offer = new Offer(Conditions.hasProduct(milk_7), Rewards.factorPoints(2), nextDay);
         offer.addReward(Rewards.addPoints(20));
         checkoutService.useOffer(offer);

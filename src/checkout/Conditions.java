@@ -15,7 +15,7 @@ public class Conditions {
         return check -> check.getProducts().stream().anyMatch(product::equals);
     }
 
-    public static Condition<Check> hasOutlet(Trademark trademark) {
+    public static Condition<Check> hasTrademark(Trademark trademark) {
         return check -> check.getProducts().stream().map(product -> product.trademark).anyMatch(trademark::equals);
     }
 
