@@ -28,6 +28,16 @@ public class Check {
         this.points += points;
     }
 
+    void addOffer(Offer offer){
+        this.offers.add(offer);
+    }
+
+    void useOffers(){
+        for (Offer offer:this.offers){
+            offer.apply(this);
+        }
+    }
+
     int getCostByCategory(Category category) {
         return products.stream()
                 .filter(p -> p.category == category)
