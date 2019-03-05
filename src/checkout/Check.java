@@ -45,4 +45,5 @@ public class Check {
                 .reduce(0, (a, b) -> a + b);
     }
 
+
 }
