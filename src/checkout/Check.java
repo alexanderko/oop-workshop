@@ -6,6 +6,7 @@ import java.util.List;
 public class Check {
     private List<Product> products = new ArrayList<>();
     private List<Offer> offers = new ArrayList<>();
+    private int sale = 0;
     private int points = 0;
 
     public int getTotalCost() {
@@ -13,7 +14,7 @@ public class Check {
         for (Product product : this.products) {
             totalCost += product.price;
         }
-        return totalCost;
+        return totalCost - sale;
     }
 
     void addProduct(Product product) {
@@ -30,6 +31,13 @@ public class Check {
 
     void addOffer(Offer offer){
         this.offers.add(offer);
+    }
+
+    void addSaleByCategory(Category category, int sale){
+        this.sale += products.stream()
+                .filter(p -> p.category == category)
+                .mapToInt(p -> p.price)
+                .reduce(0, (a, b) -> b + a * (sale / 100));
     }
 
     void useOffers(){

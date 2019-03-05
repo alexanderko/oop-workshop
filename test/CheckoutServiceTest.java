@@ -130,13 +130,13 @@ public class CheckoutServiceTest {
 
     @Test
     void useOffer__saleByCategory() {
-        checkoutService.useOffer(new Offer(new ByCategoryCondition(Category.MILK, 2), new SaleByCategoryReward(Category.MILK, .5f)));
+        checkoutService.useOffer(new Offer(new ByCategoryCondition(Category.MILK, 2), new SaleByCategoryReward(Category.MILK, 50)));
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
         Check check = checkoutService.closeCheck();
 
-        assertThat(check.getTotalPoints(), is(10));
+        assertThat(check.getTotalCost(), is(10));
     }
 }
