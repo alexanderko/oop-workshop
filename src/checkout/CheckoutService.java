@@ -17,11 +17,12 @@ public class CheckoutService {
 
     public Check closeCheck() {
         Check closedCheck = check;
+        closedCheck.applyOffers();
         check = null;
         return closedCheck;
     }
 
     public void useOffer(Offer offer) {
-        offer.apply(check);
+        check.addOffer(offer);
     }
 }

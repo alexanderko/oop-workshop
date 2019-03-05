@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Check {
     private List<Product> products = new ArrayList<>();
+    private List<Offer> offers = new ArrayList<>();
     private int points = 0;
 
     public int getTotalCost() {
@@ -32,5 +33,13 @@ public class Check {
                 .filter(p -> p.category == category)
                 .mapToInt(p -> p.price)
                 .reduce(0, (a, b) -> a + b);
+    }
+
+    void addOffer(Offer offer) {
+        offers.add(offer);
+    }
+
+    void applyOffers() {
+        offers.forEach(offer -> offer.apply(this));
     }
 }
