@@ -9,6 +9,7 @@ public class Check {
     private ArrayList<Offer> offers = new ArrayList<>();
     private LocalDate date;
     private int points = 0;
+    private int discount = 0;
 
     public Check(LocalDate date) {
         this.date = date;
@@ -19,6 +20,7 @@ public class Check {
         for (Product product : this.products) {
             totalCost += product.price;
         }
+        totalCost -= discount;
         return totalCost;
     }
 
@@ -30,6 +32,10 @@ public class Check {
         return getTotalCost() + points;
     }
 
+    void addDiscount(int discount) {
+        this.discount += discount;
+    }
+
     void addPoints(int points) {
         this.points += points;
     }
@@ -39,9 +45,8 @@ public class Check {
     }
 
     void applyOffers() {
-        for (int i = 0; i < offers.size(); i++) {
-            offers.get(i).applyOffer(this, date);
-            //offer.applyOffer(check, currentDate);
+        for (Offer offer : offers) {
+            offer.applyOffer(this, date);
         }
     }
 
