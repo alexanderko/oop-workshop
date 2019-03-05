@@ -11,6 +11,7 @@ public class AnyGoodsOffer extends Offer {
 
     @Override
     public void apply(Check check) {
-
+        if (this.totalCost <= check.getTotalCost())
+            check.addPoints(this.points);
     }
 }
