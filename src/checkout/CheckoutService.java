@@ -21,6 +21,13 @@ public class CheckoutService {
         return closedCheck;
     }
 
+    public Check closeCheckAndUseOffer(){
+        useOffer(new AnyGoodsOffer(6,2));
+        useOffer(new FactorByCategoryOffer(Category.MILK, 2));
+        Check closedCheck = closeCheck();
+        return  closedCheck;
+    }
+
     public void useOffer(Offer offer) {
         offer.apply(check);
     }

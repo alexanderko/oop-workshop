@@ -88,8 +88,6 @@ public class CheckoutServiceTest {
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(31));
-        assertThat(check.getTotalCost(), is(17));
-        assertThat(check.getTotalCostWithDiscount(), is(14));
     }
 
     @Test
@@ -101,6 +99,17 @@ public class CheckoutServiceTest {
         checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2));
         Check check = checkoutService.closeCheck();
         assertThat(check.getTotalPoints(), is(33));
+        assertThat(check.getTotalCost(), is(17));
+        assertThat(check.getTotalCostWithDiscount(), is(14));
+    }
+
+    @Test
+    void useOffer_whenCheckClose(){
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct((bred_3));
+        Check check = checkoutService.closeCheckAndUseOffer();
+        assertThat(check.getTotalCostWithDiscount(), is(14));
     }
 
 }
