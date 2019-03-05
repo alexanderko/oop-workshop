@@ -4,7 +4,7 @@ package checkout;
 import java.time.LocalDate;
 
 public class Offer {
-    public LocalDate expirationDate;
+    private LocalDate expirationDate;
     private Reward rewardtType;
 
     public Offer(LocalDate expirationDate, Reward rewardType) {
@@ -20,11 +20,11 @@ public class Offer {
         }
     }
 
-    public boolean isSatisfiedConditionals(Check check) {
+    private boolean isSatisfiedConditionals(Check check) {
         return true;
     }
 
-    public void applyReward(Check check) {
+    private void applyReward(Check check) {
         rewardtType.applyReward(check);
     }
 }

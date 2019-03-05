@@ -1,11 +1,11 @@
 package checkout;
 
-public class FactorReward implements Reward {
+public class Reward_Factor implements Reward {
 
     private final  Category category;
     private final int factor;
 
-    public FactorReward(Category category, int factor) {
+    public Reward_Factor(Category category, int factor) {
         this.category = category;
         this.factor = factor;
     }
