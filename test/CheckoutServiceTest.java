@@ -7,6 +7,9 @@ import checkout.offer_rewards.FlatReward;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.time.Month;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -246,5 +249,40 @@ public class CheckoutServiceTest {
 
         assertThat(check.getTotalPoints(), is(50));
     }
+
+    @Test
+    void userOffer__checkExpirationDate__Expired() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        specialOffer = new Offer(new FactorByCategoryReward(Category.MILK, 2),
+                                 new ByTotalCost(10),
+                                 LocalDate.of(2000, Month.AUGUST, 15));
+
+        checkoutService.useOffer(specialOffer);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(17));
+    }
+
+    @Test
+    void userOffer__checkExpirationDate__NotExpired() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        specialOffer = new Offer(new FactorByCategoryReward(Category.MILK, 2),
+                new ByTotalCost(10),
+                LocalDate.of(2020, Month.AUGUST, 15));
+
+        checkoutService.useOffer(specialOffer);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(31));
+    }
+
 
 }
