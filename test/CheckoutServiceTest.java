@@ -21,7 +21,7 @@ public class CheckoutServiceTest {
         checkoutService.openCheck();
 
         milk_7 = new Product(7, "Milk", Category.MILK);
-        bred_3 = new Product(3, "Bred");
+        bred_3 = new Product(3, "Bred", Category.BRED);
         standardExpirationDate = LocalDate.of(2100, 10, 1);
     }
 
@@ -159,9 +159,22 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new DiscountByCategoryOffer(standardExpirationDate, 3));
+        checkoutService.useOffer(new DiscountByCategoryOffer(standardExpirationDate, Category.BRED, 3));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(14));
+    }
+
+    @Test
+    void useOffer__DiscountByBrand() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(new Product(10, "SomeMilk", Category.MILK, Brand.GREEN_VALLEY));
+        checkoutService.addProduct(new Product(10, "LuxuryBred", Category.BRED, Brand.UNKNOWN_BRAND));
+        checkoutService.addProduct(bred_3);
+
+        checkoutService.useOffer(new DiscountByBrandOffer(standardExpirationDate, Brand.UNKNOWN_BRAND, 2));
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(28));
     }
 }

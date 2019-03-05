@@ -56,4 +56,12 @@ public class Check {
                 .mapToInt(p -> p.price)
                 .reduce(0, (a, b) -> a + b);
     }
+
+    boolean whetherHaveBrand(Brand brand) {
+        for (int i = 0; i < products.size(); i++) {
+            if (products.get(i).brand == brand)
+                return true;
+        }
+        return false;
+    }
 }
