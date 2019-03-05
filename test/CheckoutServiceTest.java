@@ -31,8 +31,8 @@ public class CheckoutServiceTest {
         paper_4_by_Lasca = new Product(4, "Paper", null, lasca);
         nextDay = LocalDate.now().plusDays(1);
         previousDay = LocalDate.now().minusDays(1);
-        factorPointsByCategoryExpired = new CombinedOffer(Reward.factorPointsByCategory(2, Category.MILK), previousDay);
-        factorPointsByCategoryNotExpired = new CombinedOffer(Reward.factorPointsByCategory(2, Category.MILK), nextDay);
+        factorPointsByCategoryExpired = new Offer(Rewards.factorPointsByCategory(2, Category.MILK), previousDay);
+        factorPointsByCategoryNotExpired = new Offer(Rewards.factorPointsByCategory(2, Category.MILK), nextDay);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new CombinedOffer(Condition.totalCostGreatThen(6), Reward.addPoints(2), nextDay));
+        checkoutService.useOffer(new Offer(Conditions.totalCostGreatThen(6), Rewards.addPoints(2), nextDay));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(12));
@@ -87,7 +87,7 @@ public class CheckoutServiceTest {
     void useOffer__whenCostLessThanRequired__doNothing() {
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new CombinedOffer(Condition.totalCostGreatThen(6), Reward.addPoints(2), nextDay));
+        checkoutService.useOffer(new Offer(Conditions.totalCostGreatThen(6), Rewards.addPoints(2), nextDay));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(3));
@@ -163,7 +163,7 @@ public class CheckoutServiceTest {
     @Test
     void combinedOffer__one__condition__and__reward() {
         checkoutService.useOffer(
-                new CombinedOffer(Condition.totalCostGreatThen(15), Reward.addPoints(10), nextDay)
+                new Offer(Conditions.totalCostGreatThen(15), Rewards.addPoints(10), nextDay)
         );
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(milk_7);
@@ -176,9 +176,9 @@ public class CheckoutServiceTest {
 
     @Test
     void combinedOffer__two__condition__and__one__reward() {
-        CombinedOffer combinedOffer = new CombinedOffer(Condition.totalCostGreatThen(15), Reward.addPoints(20), nextDay);
-        combinedOffer.addCondition(Condition.categoryEqualsTo(Category.MILK));
-        checkoutService.useOffer(combinedOffer);
+        Offer offer = new Offer(Conditions.totalCostGreatThen(15), Rewards.addPoints(20), nextDay);
+        offer.addCondition(Conditions.categoryEqualsTo(Category.MILK));
+        checkoutService.useOffer(offer);
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
@@ -190,7 +190,7 @@ public class CheckoutServiceTest {
 
     @Test
     void combinedOffer__condition__by__outlet() {
-        checkoutService.useOffer(new CombinedOffer(Condition.hasOutlet(lasca), Reward.discount(50), nextDay));
+        checkoutService.useOffer(new Offer(Conditions.hasOutlet(lasca), Rewards.discount(50), nextDay));
         checkoutService.addProduct(paper_4_by_Lasca);
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
@@ -202,7 +202,7 @@ public class CheckoutServiceTest {
 
     @Test
     void combinedOffer__condition__by__product() {
-        checkoutService.useOffer(new CombinedOffer(Condition.hasProduct(milk_7), Reward.factorPoints(2), nextDay));
+        checkoutService.useOffer(new Offer(Conditions.hasProduct(milk_7), Rewards.factorPoints(2), nextDay));
         checkoutService.addProduct(paper_4_by_Lasca);
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
@@ -214,9 +214,9 @@ public class CheckoutServiceTest {
 
     @Test
     void combinedOffer__two__reward() {
-        CombinedOffer combinedOffer = new CombinedOffer(Condition.hasProduct(milk_7), Reward.factorPoints(2), nextDay);
-        combinedOffer.addReward(Reward.addPoints(20));
-        checkoutService.useOffer(combinedOffer);
+        Offer offer = new Offer(Conditions.hasProduct(milk_7), Rewards.factorPoints(2), nextDay);
+        offer.addReward(Rewards.addPoints(20));
+        checkoutService.useOffer(offer);
         checkoutService.addProduct(paper_4_by_Lasca);
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
