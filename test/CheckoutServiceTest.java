@@ -28,7 +28,7 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         Check check = checkoutService.closeCheck();
 
-        assertThat(check.getTotalCost(), is(7));
+        assertThat(check.getTotalCost(), is(7.0));
     }
 
     @Test
@@ -37,18 +37,18 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(bred_3);
         Check check = checkoutService.closeCheck();
 
-        assertThat(check.getTotalCost(), is(10));
+        assertThat(check.getTotalCost(), is(10.0));
     }
 
     @Test
     void addProduct__whenCheckIsClosed__opensNewCheck() {
         checkoutService.addProduct(milk_7);
         Check milkCheck = checkoutService.closeCheck();
-        assertThat(milkCheck.getTotalCost(), is(7));
+        assertThat(milkCheck.getTotalCost(), is(7.0));
 
         checkoutService.addProduct(bred_3);
         Check bredCheck = checkoutService.closeCheck();
-        assertThat(bredCheck.getTotalCost(), is(3));
+        assertThat(bredCheck.getTotalCost(), is(3.0));
     }
 
     @Test
@@ -110,6 +110,13 @@ public class CheckoutServiceTest {
         checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 7, LocalDate.of(2008, 7, 5)));
         Check check = checkoutService.closeCheck();
         assertThat(check.getTotalPoints(), is(7));
+    }
+    @Test
+    void useDiscountOffer() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.useOffer(new DiscountByCategoryOffer(Category.MILK, 50, expiredDate));
+        Check check = checkoutService.closeCheck();
+        assertThat(check.getTotalCost(), is(3.5));
     }
 }
 
