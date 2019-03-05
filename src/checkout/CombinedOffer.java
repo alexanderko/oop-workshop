@@ -1,5 +1,6 @@
 package checkout;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -9,7 +10,8 @@ public class CombinedOffer extends Offer {
     private List<Predicate<Check>> conditions = new ArrayList<>();
     private List<Consumer<Check>> rewards = new ArrayList<>();
 
-    public CombinedOffer(Predicate<Check> condition, Consumer<Check> reward) {
+    public CombinedOffer(Predicate<Check> condition, Consumer<Check> reward, LocalDate expiredDate) {
+        super(expiredDate);
         conditions.add(condition);
         rewards.add(reward);
     }

@@ -14,6 +14,8 @@ public class CheckoutServiceTest {
     private Product bred_3;
     private Product paper_4_by_Lasca;
     private Trademark lasca;
+    private LocalDate nextDay;
+    private LocalDate previousDay;
 
     @BeforeEach
     void setUp() {
@@ -24,6 +26,8 @@ public class CheckoutServiceTest {
         milk_7 = new Product(7, "Milk", Category.MILK);
         bred_3 = new Product(3, "Bred");
         paper_4_by_Lasca = new Product(4, "Paper", null, lasca);
+        nextDay = LocalDate.now().plusDays(1);
+        previousDay = LocalDate.now().minusDays(1);
     }
 
     @Test
@@ -68,7 +72,7 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new AnyGoodsOffer(6, 2));
+        checkoutService.useOffer(new CombinedOffer(Condition.totalCostGreatThen(6), Reward.addPoints(2), nextDay));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(12));
@@ -78,7 +82,7 @@ public class CheckoutServiceTest {
     void useOffer__whenCostLessThanRequired__doNothing() {
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new AnyGoodsOffer(6, 2));
+        checkoutService.useOffer(new CombinedOffer(Condition.totalCostGreatThen(6), Reward.addPoints(2), nextDay));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(3));
@@ -97,18 +101,6 @@ public class CheckoutServiceTest {
     }
 
     @Test
-    void useOffer__addTenPoints() {
-        checkoutService.addProduct(milk_7);
-        checkoutService.addProduct(milk_7);
-        checkoutService.addProduct(bred_3);
-
-        checkoutService.useOffer(new AddTenPointsOffer());
-        Check check = checkoutService.closeCheck();
-
-        assertThat(check.getTotalPoints(), is(check.getTotalCost() + 10));
-    }
-
-    @Test
     void useOffer__add__offer__before__add__all__product() {
         checkoutService.addProduct(milk_7);
         checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2));
@@ -123,11 +115,11 @@ public class CheckoutServiceTest {
     @Test
     void useOffer__expiredDate__with__one__not__expired__offer() {
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, LocalDate.of(2000, 1, 1)));
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, previousDay));
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, LocalDate.of(2020, 1, 1)));
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, nextDay));
         checkoutService.addProduct(bred_3);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, LocalDate.of(2000, 1, 1)));
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, previousDay));
 
         Check check = checkoutService.closeCheck();
 
@@ -137,11 +129,11 @@ public class CheckoutServiceTest {
     @Test
     void useOffer__expiredDate__with__two__not__expired__offer() {
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, LocalDate.of(2000, 1, 1)));
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, previousDay));
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, LocalDate.of(2020, 1, 1)));
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, nextDay));
         checkoutService.addProduct(bred_3);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, LocalDate.of(2020, 1, 1)));
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, nextDay));
 
         Check check = checkoutService.closeCheck();
 
@@ -151,12 +143,12 @@ public class CheckoutServiceTest {
     @Test
     void useOffer__expiredDate__with__three__not__expired__offer() {
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, LocalDate.of(2000, 1, 1)));
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, previousDay));
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, LocalDate.of(2020, 1, 1)));
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, nextDay));
         checkoutService.addProduct(bred_3);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, LocalDate.of(2020, 1, 1)));
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, LocalDate.of(2020, 1, 1)));
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, nextDay));
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, nextDay));
 
         Check check = checkoutService.closeCheck();
 
@@ -166,7 +158,7 @@ public class CheckoutServiceTest {
     @Test
     void combinedOffer__one__condition__and__reward() {
         checkoutService.useOffer(
-                new CombinedOffer(Condition.totalCostGreatThen(15), Reward.addPoints(10))
+                new CombinedOffer(Condition.totalCostGreatThen(15), Reward.addPoints(10), nextDay)
         );
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(milk_7);
@@ -179,7 +171,7 @@ public class CheckoutServiceTest {
 
     @Test
     void combinedOffer__two__condition__and__one__reward() {
-        CombinedOffer combinedOffer = new CombinedOffer(Condition.totalCostGreatThen(15), Reward.addPoints(20));
+        CombinedOffer combinedOffer = new CombinedOffer(Condition.totalCostGreatThen(15), Reward.addPoints(20), nextDay);
         combinedOffer.addCondition(Condition.categoryEqualsTo(Category.MILK));
         checkoutService.useOffer(combinedOffer);
         checkoutService.addProduct(milk_7);
@@ -193,7 +185,7 @@ public class CheckoutServiceTest {
 
     @Test
     void combinedOffer__condition__by__outlet() {
-        checkoutService.useOffer(new CombinedOffer(Condition.hasOutlet(lasca), Reward.discount(50)));
+        checkoutService.useOffer(new CombinedOffer(Condition.hasOutlet(lasca), Reward.discount(50), nextDay));
         checkoutService.addProduct(paper_4_by_Lasca);
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
@@ -205,7 +197,7 @@ public class CheckoutServiceTest {
 
     @Test
     void combinedOffer__condition__by__product() {
-        checkoutService.useOffer(new CombinedOffer(Condition.hasProduct(milk_7), Reward.factorPoints(2)));
+        checkoutService.useOffer(new CombinedOffer(Condition.hasProduct(milk_7), Reward.factorPoints(2), nextDay));
         checkoutService.addProduct(paper_4_by_Lasca);
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
@@ -217,7 +209,7 @@ public class CheckoutServiceTest {
 
     @Test
     void combinedOffer__two__reward() {
-        CombinedOffer combinedOffer = new CombinedOffer(Condition.hasProduct(milk_7), Reward.factorPoints(2));
+        CombinedOffer combinedOffer = new CombinedOffer(Condition.hasProduct(milk_7), Reward.factorPoints(2), nextDay);
         combinedOffer.addReward(Reward.addPoints(20));
         checkoutService.useOffer(combinedOffer);
         checkoutService.addProduct(paper_4_by_Lasca);
