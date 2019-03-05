@@ -173,12 +173,12 @@ public class CheckoutServiceTest {
 //    }
 
     @Test
-    void userOffer__useOfferWhileBuying() {
+    void userOffer__useOfferWhileBuying__FlatReward() {
         checkoutService.addProduct(milk_7);
+        specialOffer = new Offer(new FlatReward(10), new ByTotalCost(15));
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
         checkoutService.useOffer(specialOffer);
-        specialOffer = new Offer(new FlatReward(10), new ByTotalCost(5));
 
         Check check = checkoutService.closeCheck();
 
