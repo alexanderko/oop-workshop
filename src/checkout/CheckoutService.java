@@ -7,6 +7,10 @@ public class CheckoutService {
     private LocalDate currentDate;
     private Check check;
 
+    public CheckoutService(LocalDate currentDate) {
+        this.currentDate = currentDate;
+    }
+
     public void openCheck() {
         check = new Check();
     }

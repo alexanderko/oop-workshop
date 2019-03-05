@@ -4,10 +4,14 @@ package checkout;
 import java.time.LocalDate;
 
 public abstract class Offer {
-    public LocalDate explorationTime;
+    public LocalDate expirationDate;
+
+    public Offer(LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
+    }
 
     void applyOffer(Check check, LocalDate currentDate) {
-        if (currentDate.isBefore(explorationTime)) {
+        if (currentDate.isBefore(expirationDate) || currentDate.equals(expirationDate)) {
             if (isSatisfiedConditionals(check)) {
                 applyReward(check);
             }
