@@ -16,4 +16,8 @@ public class Reward {
     public static Consumer<Check> discount(int percent) {
         return item -> item.addDiscount(percent);
     }
+
+    public static Consumer<Check> factorPointsByCategory(int factor, Category category) {
+        return item -> item.addPoints(item.getCostByCategory(category) * (factor - 1));
+    }
 }

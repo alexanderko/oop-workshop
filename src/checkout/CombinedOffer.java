@@ -10,6 +10,11 @@ public class CombinedOffer extends Offer {
     private List<Predicate<Check>> conditions = new ArrayList<>();
     private List<Consumer<Check>> rewards = new ArrayList<>();
 
+    public CombinedOffer(Consumer<Check> reward, LocalDate expiredDate) {
+        super(expiredDate);
+        rewards.add(reward);
+    }
+
     public CombinedOffer(Predicate<Check> condition, Consumer<Check> reward, LocalDate expiredDate) {
         super(expiredDate);
         conditions.add(condition);

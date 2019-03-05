@@ -16,6 +16,9 @@ public class CheckoutServiceTest {
     private Trademark lasca;
     private LocalDate nextDay;
     private LocalDate previousDay;
+    private Offer factorPointsByCategoryExpired;
+    private Offer factorPointsByCategoryNotExpired;
+
 
     @BeforeEach
     void setUp() {
@@ -28,6 +31,8 @@ public class CheckoutServiceTest {
         paper_4_by_Lasca = new Product(4, "Paper", null, lasca);
         nextDay = LocalDate.now().plusDays(1);
         previousDay = LocalDate.now().minusDays(1);
+        factorPointsByCategoryExpired = new CombinedOffer(Reward.factorPointsByCategory(2, Category.MILK), previousDay);
+        factorPointsByCategoryNotExpired = new CombinedOffer(Reward.factorPointsByCategory(2, Category.MILK), nextDay);
     }
 
     @Test
@@ -94,7 +99,7 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2));
+        checkoutService.useOffer(factorPointsByCategoryNotExpired);
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(31));
@@ -103,7 +108,7 @@ public class CheckoutServiceTest {
     @Test
     void useOffer__add__offer__before__add__all__product() {
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2));
+        checkoutService.useOffer(factorPointsByCategoryNotExpired);
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
@@ -115,11 +120,11 @@ public class CheckoutServiceTest {
     @Test
     void useOffer__expiredDate__with__one__not__expired__offer() {
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, previousDay));
+        checkoutService.useOffer(factorPointsByCategoryExpired);
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, nextDay));
+        checkoutService.useOffer(factorPointsByCategoryNotExpired);
         checkoutService.addProduct(bred_3);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, previousDay));
+        checkoutService.useOffer(factorPointsByCategoryExpired);
 
         Check check = checkoutService.closeCheck();
 
@@ -129,11 +134,11 @@ public class CheckoutServiceTest {
     @Test
     void useOffer__expiredDate__with__two__not__expired__offer() {
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, previousDay));
+        checkoutService.useOffer(factorPointsByCategoryExpired);
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, nextDay));
+        checkoutService.useOffer(factorPointsByCategoryNotExpired);
         checkoutService.addProduct(bred_3);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, nextDay));
+        checkoutService.useOffer(factorPointsByCategoryNotExpired);
 
         Check check = checkoutService.closeCheck();
 
@@ -143,12 +148,12 @@ public class CheckoutServiceTest {
     @Test
     void useOffer__expiredDate__with__three__not__expired__offer() {
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, previousDay));
+        checkoutService.useOffer(factorPointsByCategoryExpired);
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, nextDay));
+        checkoutService.useOffer(factorPointsByCategoryNotExpired);
         checkoutService.addProduct(bred_3);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, nextDay));
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, nextDay));
+        checkoutService.useOffer(factorPointsByCategoryNotExpired);
+        checkoutService.useOffer(factorPointsByCategoryNotExpired);
 
         Check check = checkoutService.closeCheck();
 
