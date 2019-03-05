@@ -1,11 +1,18 @@
 package checkout;
 
+import java.time.LocalDate;
+
 public class CheckoutService {
 
+    private LocalDate currentDate;
     private Check check;
 
+    public CheckoutService(LocalDate currentDate) {
+        this.currentDate = currentDate;
+    }
+
     public void openCheck() {
-        check = new Check();
+        check = new Check(currentDate);
     }
 
     public void addProduct(Product product) {
@@ -16,23 +23,13 @@ public class CheckoutService {
     }
 
     public Check closeCheck() {
+        check.applyOffers();
         Check closedCheck = check;
         check = null;
         return closedCheck;
     }
 
     public void useOffer(Offer offer) {
-        offer.apply(check);
-        if (offer instanceof FactorByCategoryOffer) {
-            FactorByCategoryOffer fbOffer = (FactorByCategoryOffer) offer;
-            int points = check.getCostByCategory(fbOffer.category);
-            check.addPoints(points * (fbOffer.factor - 1));
-        } else {
-            if (offer instanceof AnyGoodsOffer) {
-                AnyGoodsOffer agOffer = (AnyGoodsOffer) offer;
-                if (agOffer.totalCost <= check.getTotalCost())
-                    check.addPoints(agOffer.points);
-            }
-        }
+        check.addOffer(offer);
     }
 }
