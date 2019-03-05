@@ -1,6 +1,7 @@
 import checkout.*;
 import checkout.offer_conditions.ByCategory;
 import checkout.offer_conditions.ByTotalCost;
+import checkout.offer_rewards.DiscountReward;
 import checkout.offer_rewards.FactorByCategoryReward;
 import checkout.offer_rewards.FlatReward;
 import org.junit.jupiter.api.BeforeEach;
@@ -169,17 +170,41 @@ public class CheckoutServiceTest {
 //    }
 
     @Test
-    void userOffer__FlatOfferReward() {
+    void userOffer__useOfferWhileBuying() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+        checkoutService.useOffer(specialOffer);
+        specialOffer = new Offer(new FlatReward(10), new ByTotalCost(5));
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(27));
+    }
+
+    @Test
+    void userOffer__FlatOfferReward__ByTotalCost() {
         checkoutService.addProduct(milk_7);
 
-        specialOffer = new Offer(new FlatReward());
+        specialOffer = new Offer(new FlatReward(10), new ByTotalCost(5));
         checkoutService.useOffer(specialOffer);
 
         Check check = checkoutService.closeCheck();
 
-        assertThat(check.getTotalPoints(), is(7));
+        assertThat(check.getTotalPoints(), is(17));
     }
 
+    @Test
+    void userOffer__FlatOfferReward__ByCategory() {
+        checkoutService.addProduct(milk_7);
+
+        specialOffer = new Offer(new FlatReward(10), new ByCategory(Category.MILK));
+        checkoutService.useOffer(specialOffer);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(17));
+    }
 
     @Test
     void userOffer__FactorByCategoryReward__ByCategory() {
@@ -209,5 +234,17 @@ public class CheckoutServiceTest {
         assertThat(check.getTotalPoints(), is(31));
     }
 
+    @Test
+    void userOffer__DiscountReward__ByCategory() {
+        Product beef_100 = new Product(100, "beef", Category.MEET);
+        checkoutService.addProduct(beef_100);
+
+        specialOffer = new Offer(new DiscountReward(50), new ByCategory(Category.MEET));
+        checkoutService.useOffer(specialOffer);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(50));
+    }
 
 }

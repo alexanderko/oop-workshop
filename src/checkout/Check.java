@@ -7,10 +7,15 @@ public class Check {
     private List<Product> products = new ArrayList<>();
     private int points = 0;
 
+    private int discount = 0;
+
     public int getTotalCost() {
         int totalCost = 0;
         for (Product product : this.products) {
             totalCost += product.price;
+        }
+        if (this.discount > 0) {
+            return totalCost - (totalCost * discount / 100);
         }
         return totalCost;
     }
@@ -36,5 +41,9 @@ public class Check {
 
     public List<Product> getProducts() {
         return this.products;
+    }
+
+    public void setDiscount(int discount) {
+        this.discount = discount;
     }
 }

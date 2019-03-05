@@ -1,7 +1,5 @@
 package checkout;
 
-import checkout.offer_interfaces.Reward;
-
 public class CheckoutService {
 
     private Check check;

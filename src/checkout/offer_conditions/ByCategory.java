@@ -14,6 +14,11 @@ public class ByCategory implements Condition {
         this.requiredAmount = requiredAmount;
     }
 
+    public ByCategory(Category requiredCategory) {
+        this.requiredCategory = requiredCategory;
+        this.requiredAmount = 0;
+    }
+
     @Override
     public boolean checkCondition(Check check) {
         return (check.getCostByCategory(this.requiredCategory) > this.requiredAmount);
