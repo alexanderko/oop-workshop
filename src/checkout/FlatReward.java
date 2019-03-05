@@ -11,7 +11,6 @@ public class FlatReward implements Reward {
 
     @Override
     public void applyReward(Check check) {
-        if (this.totalCost <= check.getTotalCost())
-            check.addPoints(this.points);
+        check.addPoints(this.points);
     }
 }

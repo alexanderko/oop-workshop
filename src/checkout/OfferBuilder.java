@@ -41,8 +41,8 @@ public class OfferBuilder {
         return this;
     }
 
-    public OfferBuilder costByCategory(Category category) {
-        offer.setConditionType(new ByCategoryCondition(category));
+    public OfferBuilder costByCategory(Category category, int totalCost) {
+        offer.setConditionType(new ByCategoryCondition(category, totalCost));
         return this;
     }
 

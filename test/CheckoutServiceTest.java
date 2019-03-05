@@ -34,7 +34,7 @@ public class CheckoutServiceTest {
         factorByCategoryOffer = new OfferBuilder()
                 .setExpiration(standardExpirationDate)
                 .factorReward(Category.MILK, 2)
-                .costByCategory(Category.MILK)
+                .costByCategory(Category.MILK, 1)
                 .build();
 
         milk_7 = new Product(7, "Milk", Category.MILK);
@@ -119,7 +119,7 @@ public class CheckoutServiceTest {
 
         Offer offer = new OfferBuilder()
                 .setExpiration(currentDate.minusDays(1))
-                .costByCategory(Category.MILK)
+                .costByCategory(Category.MILK, 1)
                 .factorReward(Category.MILK, 2)
                 .build();
 
@@ -149,7 +149,7 @@ public class CheckoutServiceTest {
 
         Offer offer = new OfferBuilder()
                 .setExpiration(currentDate)
-                .costByCategory(Category.MILK)
+                .costByCategory(Category.MILK, 1)
                 .factorReward(Category.MILK, 2)
                 .build();
 
@@ -182,13 +182,13 @@ public class CheckoutServiceTest {
         Offer discountByCategoryOffer = new OfferBuilder()
                 .setExpiration(standardExpirationDate)
                 .discountReward(3)
-                .costByCategory(Category.BRED)
+                .costByCategory(Category.BRED, 1)
                 .build();
 
         checkoutService.useOffer(discountByCategoryOffer);
         Check check = checkoutService.closeCheck();
 
-        assertThat(check.getTotalPoints(), is(14));
+        assertThat(check.getTotalCost(), is(14));
     }
 
     @Test
@@ -207,6 +207,23 @@ public class CheckoutServiceTest {
         checkoutService.useOffer(discountByCategoryOffer);
         Check check = checkoutService.closeCheck();
 
-        assertThat(check.getTotalPoints(), is(28));
+        assertThat(check.getTotalCost(), is(28));
+    }
+
+    @Test
+    void useOffer__whenConditionIsNotSatisfied__doNothing() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        Offer offer = new OfferBuilder()
+                .setExpiration(standardExpirationDate)
+                .factorReward(Category.MILK, 2)
+                .costByCategory(Category.MILK, 10)
+                .build();
+
+        checkoutService.useOffer(offer);
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalCost(), is(10));
     }
 }
