@@ -112,4 +112,22 @@ public class CheckoutServiceTest {
         assertThat(check.getTotalCostWithDiscount(), is(14));
     }
 
+    @Test
+    void isFactorByCategoryOfferAilable(){
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct((bred_3));
+        Offer offer = new FactorByCategoryOffer(Category.MILK, 2);
+        assertThat(offer.isOfferavAilable(), is(false));
+    }
+
+    @Test
+    void isAnyGoodsOfferAvaliable(){
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct((bred_3));
+        Offer offer = new AnyGoodsOffer(6,2);
+        assertThat(offer.isOfferavAilable(), is(true));
+    }
+
 }
