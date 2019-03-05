@@ -29,10 +29,7 @@ public class CheckoutService {
     }
 
     public void useOffer(Offer offer) {
-        if (check.getProducts().size() == 0)
-            this.usedOffer = offer;
-        else
-            offer.applyOffer(check);
+        this.usedOffer = offer;
     }
 
 

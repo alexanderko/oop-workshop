@@ -95,9 +95,9 @@ public class CheckoutServiceTest {
 
     @Test
     void userOffer__useOfferBeforeBuyingGoods__FactorBycategory() {
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2));
 
         checkoutService.addProduct(milk_7);
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2));
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
@@ -108,8 +108,8 @@ public class CheckoutServiceTest {
 
     @Test
     void userOffer__useOfferBeforeBuyingGoods__AnyGoods() {
-        checkoutService.useOffer(new AnyGoodsOffer(6, 2));
         checkoutService.addProduct(milk_7);
+        checkoutService.useOffer(new AnyGoodsOffer(6, 2));
         checkoutService.addProduct(bred_3);
 
         Check check = checkoutService.closeCheck();
