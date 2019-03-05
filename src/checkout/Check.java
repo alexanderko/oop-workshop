@@ -14,10 +14,7 @@ public class Check {
         for (Product product : this.products) {
             totalCost += product.price;
         }
-        if (this.discount > 0) {
-            return totalCost - (totalCost * discount / 100);
-        }
-        return totalCost;
+        return (this.discount > 0) ? totalCost - (totalCost * discount / 100) : totalCost;
     }
 
     void addProduct(Product product) {
