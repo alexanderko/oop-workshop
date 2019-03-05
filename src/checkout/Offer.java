@@ -3,7 +3,7 @@ package checkout;
 
 import java.time.LocalDate;
 
-public abstract class Offer {
+public class Offer {
     private LocalDate expiresOn;
     private Reward rewardType;
     private Condition conditionType;
@@ -20,6 +20,18 @@ public abstract class Offer {
                 applyReward(check);
             }
         }
+    }
+
+    public void setExpiration(LocalDate expiresOn) {
+        this.expiresOn = expiresOn;
+    }
+
+    public void setRewardType(Reward rewardType) {
+        this.rewardType = rewardType;
+    }
+
+    public void setConditionType(Condition conditionType) {
+        this.conditionType = conditionType;
     }
 
     private boolean isSatisfy(Check check) {

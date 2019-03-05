@@ -15,12 +15,27 @@ public class CheckoutServiceTest {
     private LocalDate standardExpirationDate;
     private LocalDate currentDate;
 
+    private Offer anyGoodsOffer;
+    private Offer factorByCategoryOffer;
+
     @BeforeEach
     void setUp() {
         currentDate = LocalDate.now();
         standardExpirationDate = currentDate.plusDays(1);
         checkoutService = new CheckoutService(currentDate);
         checkoutService.openCheck();
+
+        anyGoodsOffer = new OfferBuilder()
+                .setExpiration(standardExpirationDate)
+                .flatReward(6, 2)
+                .costByTotalCost(6)
+                .build();
+
+        factorByCategoryOffer = new OfferBuilder()
+                .setExpiration(standardExpirationDate)
+                .factorReward(Category.MILK, 2)
+                .costByCategory(Category.MILK)
+                .build();
 
         milk_7 = new Product(7, "Milk", Category.MILK);
         bred_3 = new Product(3, "Bred", Category.BRED);
@@ -68,7 +83,7 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new AnyGoodsOffer(standardExpirationDate, 6, 2));
+        checkoutService.useOffer(anyGoodsOffer);
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(12));
@@ -78,7 +93,7 @@ public class CheckoutServiceTest {
     void useOffer__whenCostLessThanRequired__doNothing() {
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new AnyGoodsOffer(standardExpirationDate, 6, 2));
+        checkoutService.useOffer(anyGoodsOffer);
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(3));
@@ -90,7 +105,7 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new FactorByCategoryOffer(standardExpirationDate, Category.MILK, 2));
+        checkoutService.useOffer(factorByCategoryOffer);
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(31));
@@ -102,7 +117,13 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new FactorByCategoryOffer(currentDate.minusDays(1), Category.MILK, 2));
+        Offer offer = new OfferBuilder()
+                .setExpiration(currentDate.minusDays(1))
+                .costByCategory(Category.MILK)
+                .factorReward(Category.MILK, 2)
+                .build();
+
+        checkoutService.useOffer(offer);
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(17));
@@ -114,7 +135,7 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new FactorByCategoryOffer(standardExpirationDate, Category.MILK, 2));
+        checkoutService.useOffer(factorByCategoryOffer);
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(31));
@@ -126,7 +147,13 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new FactorByCategoryOffer(currentDate, Category.MILK, 2));
+        Offer offer = new OfferBuilder()
+                .setExpiration(currentDate)
+                .costByCategory(Category.MILK)
+                .factorReward(Category.MILK, 2)
+                .build();
+
+        checkoutService.useOffer(offer);
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(31));
@@ -137,7 +164,7 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
-        checkoutService.useOffer(new FactorByCategoryOffer(standardExpirationDate, Category.MILK, 2));
+        checkoutService.useOffer(factorByCategoryOffer);
 
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(milk_7);
@@ -152,7 +179,13 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new DiscountByCategoryOffer(standardExpirationDate, Category.BRED, 3));
+        Offer discountByCategoryOffer = new OfferBuilder()
+                .setExpiration(standardExpirationDate)
+                .discountReward(3)
+                .costByCategory(Category.BRED)
+                .build();
+
+        checkoutService.useOffer(discountByCategoryOffer);
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(14));
@@ -162,10 +195,16 @@ public class CheckoutServiceTest {
     void useOffer__DiscountByBrand() {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(new Product(10, "SomeMilk", Category.MILK, Trademark.GREEN_VALLEY));
-        checkoutService.addProduct(new Product(10, "LuxuryBred", Category.BRED, Trademark.UNKNOWN_BRAND));
+        checkoutService.addProduct(new Product(10, "LuxuryBred", Category.BRED, Trademark.CHERKASY_BRED));
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new DiscountByBrandOffer(standardExpirationDate, Trademark.UNKNOWN_BRAND, 2));
+        Offer discountByCategoryOffer = new OfferBuilder()
+                .setExpiration(standardExpirationDate)
+                .discountReward(2)
+                .costByTrademark(Trademark.CHERKASY_BRED)
+                .build();
+
+        checkoutService.useOffer(discountByCategoryOffer);
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(28));
