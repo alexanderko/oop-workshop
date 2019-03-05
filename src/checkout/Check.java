@@ -50,6 +50,13 @@ public class Check {
                 .reduce(0, (a, b) -> a + b);
     }
 
+    int getCostByOutlet(Outlet outlet) {
+        return products.stream()
+                .filter(p -> p.outlet == outlet)
+                .mapToInt(p -> p.price)
+                .reduce(0, (a,b) -> a + b);
+    }
+
     void addDiscount(double discount) {
         this.discount += discount;
     }

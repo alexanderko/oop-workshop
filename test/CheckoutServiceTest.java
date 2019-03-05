@@ -1,6 +1,7 @@
 import checkout.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import sun.security.x509.CertAttrSet;
 
 import java.time.LocalDate;
 
@@ -19,104 +20,92 @@ public class CheckoutServiceTest {
         checkoutService = new CheckoutService();
         checkoutService.openCheck();
 
-        milk_7 = new Product(7, "Milk", Category.MILK);
-        bred_3 = new Product(3, "Bred");
+        milk_7 = new Product(7, "Milk", Category.MILK, Outlet.PEPSI);
+        bred_3 = new Product(3, "Bred", Category.BRED, Outlet.ROSHEN);
     }
 
     @Test
-    void closeCheck__withOneProduct() {
+    void useFactorReward_whenCostMoreThenRequired() {
         checkoutService.addProduct(milk_7);
+        checkoutService.useOffer(new Offer(expiredDate, new FactorReward(3), new ConditionOfTotalCost(10)));
         Check check = checkoutService.closeCheck();
 
-        assertThat(check.getTotalCost(), is(7.0));
-    }
-
-    @Test
-    void closeCheck__withTwoProducts() {
-        checkoutService.addProduct(milk_7);
-        checkoutService.addProduct(bred_3);
-        Check check = checkoutService.closeCheck();
-
-        assertThat(check.getTotalCost(), is(10.0));
-    }
-
-    @Test
-    void addProduct__whenCheckIsClosed__opensNewCheck() {
-        checkoutService.addProduct(milk_7);
-        Check milkCheck = checkoutService.closeCheck();
-        assertThat(milkCheck.getTotalCost(), is(7.0));
-
-        checkoutService.addProduct(bred_3);
-        Check bredCheck = checkoutService.closeCheck();
-        assertThat(bredCheck.getTotalCost(), is(3.0));
-    }
-
-    @Test
-    void closeCheck__calcTotalPoints() {
-        checkoutService.addProduct(milk_7);
-        checkoutService.addProduct(bred_3);
-        Check check = checkoutService.closeCheck();
-
-        assertThat(check.getTotalPoints(), is(10));
-    }
-
-    @Test
-    void useOffer__addOfferPoints() {
-        checkoutService.addProduct(milk_7);
-        checkoutService.addProduct(bred_3);
-
-        checkoutService.useOffer(new AnyGoodsOffer(6, 2, expiredDate));
-        Check check = checkoutService.closeCheck();
-
-        assertThat(check.getTotalPoints(), is(12));
-    }
-
-    @Test
-    void useOffer__whenCostLessThanRequired__doNothing() {
-        checkoutService.addProduct(bred_3);
-
-        checkoutService.useOffer(new AnyGoodsOffer(6, 2, expiredDate));
-        Check check = checkoutService.closeCheck();
-
-        assertThat(check.getTotalPoints(), is(3));
-    }
-
-    @Test
-    void useOffer__factorByCategory() {
-        checkoutService.addProduct(milk_7);
-        checkoutService.addProduct(milk_7);
-        checkoutService.addProduct(bred_3);
-
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, expiredDate));
-        Check check = checkoutService.closeCheck();
-
-        assertThat(check.getTotalPoints(), is(31));
-    }
-
-    @Test
-    void addProducts__afterUseOffers(){
-        checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, expiredDate));
-        checkoutService.addProduct(milk_7);
-        checkoutService.addProduct(bred_3);
-        Check check = checkoutService.closeCheck();
-
-        assertThat(check.getTotalPoints(), is(31));
-    }
-
-    @Test
-    void useExpiredOffer() {
-        checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 7, LocalDate.of(2008, 7, 5)));
-        Check check = checkoutService.closeCheck();
         assertThat(check.getTotalPoints(), is(7));
     }
+
     @Test
-    void useDiscountOffer() {
+    void useFactorRewardAndConditionByCategory() {
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new DiscountByCategoryOffer(Category.MILK, 50, expiredDate));
+        checkoutService.useOffer(new Offer(expiredDate, new FactorReward(3), new ConditionByCategory(Category.MILK)));
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
         Check check = checkoutService.closeCheck();
-        assertThat(check.getTotalCost(), is(3.5));
+
+        assertThat(check.getTotalPoints(), is(45));
+    }
+
+    @Test
+    void useFlatRewardAndConditionByCategory() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.useOffer(new Offer(expiredDate, new FlatReward(100), new ConditionByCategory(Category.MILK)));
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(117));
+    }
+    @Test
+    void useFlatRewardAndConditionByOutlet() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.useOffer(new Offer(expiredDate, new FlatReward(30), new ConditionByOutlet(Outlet.ROSHEN)));
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(47));
+    }
+    @Test
+    void useDiscountRewardAndConditionByOutlet() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.useOffer(new Offer(expiredDate, new DiscountReward(50), new ConditionByOutlet(Outlet.ROSHEN)));
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalCost(), is(15.5));
+    }
+
+    @Test
+    void useDiscountRewardAndConditionByOutlet__whenOutletNotFound() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.useOffer(new Offer(expiredDate, new DiscountReward(50), new ConditionByOutlet(Outlet.LAYS)));
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalCost(), is(17.0));
+    }
+
+    @Test
+    void useDiscountRewardAndConditionByTotalCost() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.useOffer(new Offer(expiredDate, new DiscountReward(50), new ConditionOfTotalCost(7)));
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalCost(), is(8.5));
+    }
+
+    @Test
+    void useDiscountRewardAndConditionByTotalCost__whenTotalCostLessThenRequire() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.useOffer(new Offer(expiredDate, new DiscountReward(50), new ConditionOfTotalCost(50)));
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalCost(), is(17.0));
     }
 }
 
