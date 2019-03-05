@@ -1,5 +1,6 @@
 package checkout;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,9 @@ public class Check {
     }
 
     void applyOffers() {
-        offers.forEach(offer -> offer.apply(this));
+        LocalDate currentDate = LocalDate.now();
+        offers.stream()
+                .filter(offer -> !offer.isExpired(currentDate))
+                .forEach(offer -> offer.apply(this));
     }
 }
