@@ -2,6 +2,8 @@ import checkout.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -10,6 +12,7 @@ public class CheckoutServiceTest {
     private Product milk_7;
     private CheckoutService checkoutService;
     private Product bred_3;
+    private LocalDate expiredDate = LocalDate.of(2100, 4, 14);
 
     @BeforeEach
     void setUp() {
@@ -62,7 +65,7 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new AnyGoodsOffer(6, 2));
+        checkoutService.useOffer(new AnyGoodsOffer(6, 2, expiredDate));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(12));
@@ -72,7 +75,7 @@ public class CheckoutServiceTest {
     void useOffer__whenCostLessThanRequired__doNothing() {
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new AnyGoodsOffer(6, 2));
+        checkoutService.useOffer(new AnyGoodsOffer(6, 2, expiredDate));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(3));
@@ -84,7 +87,7 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2));
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, expiredDate));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(31));
@@ -93,11 +96,20 @@ public class CheckoutServiceTest {
     @Test
     void addProducts__afterUseOffers(){
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2));
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, expiredDate));
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(31));
     }
+
+    @Test
+    void useExpiredOffer() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 7, LocalDate.of(2008, 7, 5)));
+        Check check = checkoutService.closeCheck();
+        assertThat(check.getTotalPoints(), is(7));
+    }
 }
+
