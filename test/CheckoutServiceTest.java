@@ -139,4 +139,16 @@ public class CheckoutServiceTest {
 
         assertThat(check.getTotalCost(), is(10));
     }
+
+    @Test
+    void useOffer__factorByTrademark() {
+        checkoutService.useOffer(new Offer(new ByTrademarkCondition(Category.MILK, 2), new FactorReward(2)));
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(31));
+    }
 }
