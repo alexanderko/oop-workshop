@@ -164,12 +164,12 @@ public class CheckoutServiceTest {
         Product beef_100 = new Product(100, "beef", Category.MEET);
         checkoutService.addProduct(beef_100);
 
-        specialOffer = new Offer(new DiscountReward(50), new ByCategory(Category.MEET));
+        specialOffer = new Offer(new DiscountReward(20), new ByCategory(Category.MEET));
         checkoutService.useOffer(specialOffer);
 
         Check check = checkoutService.closeCheck();
 
-        assertThat(check.getTotalCost(), is(50));
+        assertThat(check.getTotalCost(), is(80));
     }
 
     @Test
