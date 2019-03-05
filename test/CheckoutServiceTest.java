@@ -2,6 +2,8 @@ import checkout.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -85,6 +87,67 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(bred_3);
 
         checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2));
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(31));
+    }
+
+    @Test
+    void useOffer__beforeAddProducts() {
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2));
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(31));
+    }
+
+    @Test
+    void useOffer__actualOffer() {
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, LocalDate.of(2019,3,31)));
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(31));
+    }
+
+    @Test
+    void useOffer__withStrategy() {
+        checkoutService.useOffer(new Offer(new TotalCostCondition(13), new FlatReward(5)));
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+        checkoutService.addProduct(bred_3);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(18));
+    }
+
+    @Test
+    void useOffer__saleByCategory() {
+        checkoutService.useOffer(new Offer(new ByCategoryCondition(Category.MILK, 2), new SaleByCategoryReward(Category.MILK, 50)));
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalCost(), is(10));
+    }
+
+    @Test
+    void useOffer__factorByTrademark() {
+        milk_7 = new Product(7, "Milk", Trademark.WHITE_LINE);
+        checkoutService.useOffer(new Offer(new ByTrademarkCondition(Trademark.WHITE_LINE, 2), new FactorReward(Trademark.WHITE_LINE, 2)));
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(31));
