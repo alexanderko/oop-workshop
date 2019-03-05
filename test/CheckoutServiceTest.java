@@ -12,14 +12,18 @@ public class CheckoutServiceTest {
     private Product milk_7;
     private CheckoutService checkoutService;
     private Product bred_3;
+    private Product paper_4_by_Lasca;
+    private Outlet lasca;
 
     @BeforeEach
     void setUp() {
         checkoutService = new CheckoutService();
         checkoutService.openCheck();
 
+        lasca = new Outlet("Lasca");
         milk_7 = new Product(7, "Milk", Category.MILK);
         bred_3 = new Product(3, "Bred");
+        paper_4_by_Lasca = new Product(4, "Paper", null, lasca);
     }
 
     @Test
@@ -157,5 +161,71 @@ public class CheckoutServiceTest {
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(59));
+    }
+
+    @Test
+    void combinedOffer__one__condition__and__reward() {
+        checkoutService.useOffer(
+                new CombinedOffer(Condition.totalCostGreatThen(15), Reward.addPoints(10))
+        );
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(17 + 10));
+    }
+
+    @Test
+    void combinedOffer__two__condition__and__one__reward() {
+        CombinedOffer combinedOffer = new CombinedOffer(Condition.totalCostGreatThen(15), Reward.addPoints(20));
+        combinedOffer.addCondition(Condition.categoryEqualsTo(Category.MILK));
+        checkoutService.useOffer(combinedOffer);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(17 + 20));
+    }
+
+    @Test
+    void combinedOffer__condition__by__outlet() {
+        checkoutService.useOffer(new CombinedOffer(Condition.hasOutlet(lasca), Reward.discount(50)));
+        checkoutService.addProduct(paper_4_by_Lasca);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalCost(), is(7));
+    }
+
+    @Test
+    void combinedOffer__condition__by__product() {
+        checkoutService.useOffer(new CombinedOffer(Condition.hasProduct(milk_7), Reward.factorPoints(2)));
+        checkoutService.addProduct(paper_4_by_Lasca);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(14 * 2));
+    }
+
+    @Test
+    void combinedOffer__two__reward() {
+        CombinedOffer combinedOffer = new CombinedOffer(Condition.hasProduct(milk_7), Reward.factorPoints(2));
+        combinedOffer.addReward(Reward.addPoints(20));
+        checkoutService.useOffer(combinedOffer);
+        checkoutService.addProduct(paper_4_by_Lasca);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(14 * 2 + 20));
     }
 }

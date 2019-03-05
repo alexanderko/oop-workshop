@@ -1,7 +1,6 @@
 package checkout;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 public class FactorByCategoryOffer extends Offer {
     final Category category;

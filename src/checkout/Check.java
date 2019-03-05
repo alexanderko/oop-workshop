@@ -8,13 +8,14 @@ public class Check {
     private List<Product> products = new ArrayList<>();
     private List<Offer> offers = new ArrayList<>();
     private int points = 0;
+    private int discount = 0;
 
     public int getTotalCost() {
         int totalCost = 0;
         for (Product product : this.products) {
             totalCost += product.price;
         }
-        return totalCost;
+        return (int) (totalCost - (totalCost * discount / 100.0));
     }
 
     void addProduct(Product product) {
@@ -45,5 +46,13 @@ public class Check {
         offers.stream()
                 .filter(offer -> !offer.isExpired(currentDate))
                 .forEach(offer -> offer.apply(this));
+    }
+
+    List<Product> getProducts() {
+        return new ArrayList<>(products);
+    }
+
+    public void addDiscount(int discount) {
+        this.discount += discount;
     }
 }
