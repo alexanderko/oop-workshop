@@ -3,7 +3,10 @@ package checkout;
 import java.time.LocalDate;
 import java.time.Month;
 
+
 public abstract class Offer {
+
+
 
     public void applyOffer(Check check) {
         if (this.expiresDate.compareTo(LocalDate.now()) >= 0) {
