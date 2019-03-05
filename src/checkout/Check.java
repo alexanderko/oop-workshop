@@ -45,5 +45,11 @@ public class Check {
                 .reduce(0, (a, b) -> a + b);
     }
 
+    int getCountProductsByCategory(Category category) {
+        return (int) products.stream()
+                .filter(p -> p.category == category)
+                .count();
+    }
+
 
 }
