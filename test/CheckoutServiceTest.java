@@ -10,6 +10,7 @@ public class CheckoutServiceTest {
     private Product milk_7;
     private CheckoutService checkoutService;
     private Product bred_3;
+    private Product milk_WithBrand;
 
     @BeforeEach
     void setUp() {
@@ -18,6 +19,7 @@ public class CheckoutServiceTest {
 
         milk_7 = new Product(7, "Milk", Category.MILK);
         bred_3 = new Product(3, "Bred");
+        milk_WithBrand = new Product(7, "Milk", Category.MILK, Brand.VOLOSHKOVE_POLE);
     }
 
     @Test
@@ -100,7 +102,7 @@ public class CheckoutServiceTest {
         Check check = checkoutService.closeCheck();
         assertThat(check.getTotalPoints(), is(33));
         assertThat(check.getTotalCost(), is(17));
-        assertThat(check.getTotalCostWithDiscount(), is(14));
+        assertThat(check.getTotalCostWithDiscount(), is(17));
     }
 
     @Test
@@ -109,7 +111,7 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct((bred_3));
         Check check = checkoutService.closeCheckAndUseOffer();
-        assertThat(check.getTotalCostWithDiscount(), is(14));
+        assertThat(check.getTotalCostWithDiscount(), is(17));
     }
 
     @Test
@@ -130,4 +132,46 @@ public class CheckoutServiceTest {
         assertThat(offer.isOfferavAilable(), is(true));
     }
 
+    @Test
+    void useOffer_SpecificBrandOffer(){
+        checkoutService.addProduct(milk_WithBrand);
+        checkoutService.addProduct(milk_WithBrand);
+        checkoutService.useOffer(new SpecificBrandOffer(Brand.VOLOSHKOVE_POLE, 50));
+        Check check = checkoutService.closeCheck();
+        assertThat(check.getTotalCostWithDiscount(), is(7));
+    }
+
+    @Test
+    void useOffer_Strategy_TotalCost(){
+        checkoutService.addProduct(milk_WithBrand);
+        checkoutService.addProduct(milk_WithBrand);
+        OfferWithStrategy offer = new OfferWithStrategy(new Flat(), new TotalCost());
+        checkoutService.useOfferWithStrategy(offer);
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(34));
+    }
+
+    @Test
+    void useOffer_Strategy_ByCategory(){
+        checkoutService.addProduct(milk_WithBrand);
+        checkoutService.addProduct(milk_WithBrand);
+        OfferWithStrategy offer = new OfferWithStrategy(new Factor(), new ByCategory());
+        checkoutService.useOfferWithStrategy(offer);
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(28));
+    }
+
+    @Test
+    void useOffer_Strategy_ByBrand(){
+        checkoutService.addProduct(milk_WithBrand);
+        checkoutService.addProduct(milk_WithBrand);
+        OfferWithStrategy offer = new OfferWithStrategy(new Discount(), new ByBrand());
+        checkoutService.useOfferWithStrategy(offer);
+        Check check = checkoutService.closeCheck();
+
+
+        assertThat(check.getTotalCostWithDiscount(), is(7));
+    }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 public class Check {
     private List<Product> products = new ArrayList<>();
     private int points = 0;
+    private int discount = 0;
 
     public int getTotalCost() {
         int totalCost = 0;
@@ -16,8 +17,7 @@ public class Check {
     }
 
     public int getTotalCostWithDiscount(){
-
-        return getTotalCost() - getTotalPoints()/10;
+        return getTotalCost() - discount/10;
     }
 
     void addProduct(Product product) {
@@ -37,5 +37,24 @@ public class Check {
                 .filter(p -> p.category == category)
                 .mapToInt(p -> p.price)
                 .reduce(0, (a, b) -> a + b);
+    }
+
+    public int getPointsForBrand(Brand brand) {
+        return products.stream()
+                .filter(p -> p.brand == brand)
+                .mapToInt(p -> p.price)
+                .reduce(0, (a,b)-> a+b);
+    }
+
+    public void addDiscount(int discount) {
+        this.discount = discount;
+    }
+
+    public int getDiscount(){
+        return discount;
+    }
+
+    public List<Product> getProducts() {
+        return products;
     }
 }
