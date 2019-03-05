@@ -1,4 +1,5 @@
 import checkout.*;
+import checkout.offer_conditions.ByCategory;
 import checkout.offer_rewards.FactorByCategoryReward;
 import checkout.offer_rewards.FlatReward;
 import org.junit.jupiter.api.BeforeEach;
@@ -178,17 +179,22 @@ public class CheckoutServiceTest {
         assertThat(check.getTotalPoints(), is(7));
     }
 
+
     @Test
     void userOffer__FactorByCategoryReward() {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        specialOffer = new Offer(new FactorByCategoryReward(Category.MILK, 2));
+        specialOffer = new Offer(new FactorByCategoryReward(Category.MILK, 2), new ByCategory(Category.MILK, 10));
         checkoutService.useOffer(specialOffer);
 
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(31));
     }
+
+
+
+
 }

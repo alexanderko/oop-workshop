@@ -20,7 +20,7 @@ public class CheckoutService {
     }
 
     public Check closeCheck() {
-        if (this.usedOffer != null) {
+        if (this.usedOffer != null && this.usedOffer.isOfferValid(check)) {
             this.usedOffer.applyOffer(check);
         }
         Check closedCheck = check;

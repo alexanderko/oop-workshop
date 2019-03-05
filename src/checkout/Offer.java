@@ -25,6 +25,10 @@ public class Offer {
     public void applyOffer(Check check) {
         reward.applyReward(check);
     }
+
+    public boolean isOfferValid(Check check) {
+        return (condition == null) || condition.checkCondition(check);
+    }
 //
 //    public void applyOffer(Check check) {
 //        if (this.expiresDate.compareTo(LocalDate.now()) >= 0) {
