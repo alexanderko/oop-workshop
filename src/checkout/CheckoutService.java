@@ -1,5 +1,7 @@
 package checkout;
 
+import checkout.offer_interfaces.Reward;
+
 public class CheckoutService {
 
     private Check check;
@@ -32,5 +34,6 @@ public class CheckoutService {
         else
             offer.applyOffer(check);
     }
+
 
 }

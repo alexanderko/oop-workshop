@@ -23,11 +23,11 @@ public class Check {
         return getTotalCost() + points;
     }
 
-    void addPoints(int points) {
+    public void addPoints(int points) {
         this.points += points;
     }
 
-    int getCostByCategory(Category category) {
+    public int getCostByCategory(Category category) {
         return products.stream()
                 .filter(p -> p.category == category)
                 .mapToInt(p -> p.price)
