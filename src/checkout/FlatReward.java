@@ -1,20 +1,12 @@
 package checkout;
 
-import java.time.LocalDate;
-
-public class AnyGoodsOffer extends Offer {
+public class FlatReward implements Reward {
     public final int totalCost;
     public final int points;
 
-    public AnyGoodsOffer(int totalCost, int points, LocalDate expirationDate) {
-        super(expirationDate);
+    public FlatReward(int totalCost, int points) {
         this.totalCost = totalCost;
         this.points = points;
-    }
-
-    @Override
-    public boolean isSatisfiedConditionals(Check check) {
-        return true;
     }
 
     @Override
