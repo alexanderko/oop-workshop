@@ -142,7 +142,8 @@ public class CheckoutServiceTest {
 
     @Test
     void useOffer__factorByTrademark() {
-        checkoutService.useOffer(new Offer(new ByTrademarkCondition(Category.MILK, 2), new FactorReward(2)));
+        milk_7 = new Product(7, "Milk", Trademark.WHITE_LINE);
+        checkoutService.useOffer(new Offer(new ByTrademarkCondition(Trademark.WHITE_LINE, 2), new FactorReward(2)));
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);

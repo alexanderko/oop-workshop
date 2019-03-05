@@ -59,5 +59,9 @@ public class Check {
                 .count();
     }
 
-
+    int getCountProductsByTrademark(Trademark trademark) {
+        return (int) products.stream()
+                .filter(p -> p.trademark == trademark)
+                .count();
+    }
 }
