@@ -1,11 +1,11 @@
 package checkout;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class AnyGoodsOffer extends Offer {
     public final int totalCost;
     public final int points;
-    private final Date expirationDate;
+    private final LocalDate expirationDate;
 
     public AnyGoodsOffer(int totalCost, int points) {
         this.totalCost = totalCost;
@@ -13,7 +13,7 @@ public class AnyGoodsOffer extends Offer {
         this.expirationDate = null;
     }
 
-    public AnyGoodsOffer(int totalCost, int points, Date expirationDate) {
+    public AnyGoodsOffer(int totalCost, int points, LocalDate expirationDate) {
         this.totalCost = totalCost;
         this.points = points;
         this.expirationDate = expirationDate;
@@ -21,13 +21,19 @@ public class AnyGoodsOffer extends Offer {
 
     @Override
     public void apply(Check check) {
-        AnyGoodsOffer agOffer = (AnyGoodsOffer) this;
-        if (agOffer.totalCost <= check.getTotalCost())
-            check.addPoints(agOffer.points);
+        if (isActual()) {
+            AnyGoodsOffer agOffer = (AnyGoodsOffer) this;
+            if (agOffer.totalCost <= check.getTotalCost())
+                check.addPoints(agOffer.points);
+        }
     }
 
     @Override
     public boolean isActual(){
-        return true;
+        if (this.expirationDate != null) {
+            return expirationDate.isAfter(LocalDate.now());
+        } else {
+            return true;
+        }
     }
 }

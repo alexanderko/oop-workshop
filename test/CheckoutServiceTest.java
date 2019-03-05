@@ -2,7 +2,7 @@ import checkout.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -106,7 +106,7 @@ public class CheckoutServiceTest {
 
     @Test
     void useOffer__actualOffer() {
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, new Date(19,3,6)));
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, LocalDate.of(2019,3,31)));
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
