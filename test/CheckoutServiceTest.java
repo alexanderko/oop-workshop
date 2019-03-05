@@ -169,7 +169,7 @@ public class CheckoutServiceTest {
 
         Check check = checkoutService.closeCheck();
 
-        assertThat(check.getTotalPoints(), is(50));
+        assertThat(check.getTotalCost(), is(50));
     }
 
     @Test
@@ -207,6 +207,5 @@ public class CheckoutServiceTest {
 
         assertThat(check.getTotalPoints(), is(31));
     }
-
 
 }

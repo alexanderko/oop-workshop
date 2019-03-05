@@ -14,6 +14,11 @@ public class Offer {
     private LocalDate expiresDate = LocalDate.of(2020, Month.JANUARY, 16);
     private LocalDate dateOfCheck = LocalDate.now();
 
+    public Offer(Reward rewardType) {
+        this.reward = rewardType;
+        this.condition = null;
+    }
+
     public Offer(Reward rewardType, Condition conditionType) {
         this.reward = rewardType;
         this.condition = conditionType;
@@ -23,11 +28,6 @@ public class Offer {
         this.reward = rewardType;
         this.condition = conditionType;
         this.expiresDate = expiresDate;
-    }
-
-    public Offer(Reward rewardType) {
-        this.reward = rewardType;
-        this.condition = null;
     }
 
     public void applyOffer(Check check) {
