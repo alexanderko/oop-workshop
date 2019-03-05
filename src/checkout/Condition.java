@@ -1,5 +1,5 @@
 package checkout;
 
 public interface Condition {
-    boolean isSatisfiedConditionals(Check check);
+    boolean isSatisfy(Check check);
 }

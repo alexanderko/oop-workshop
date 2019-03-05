@@ -1,15 +1,15 @@
 package checkout;
 
-public class Condition_TotalCost implements Condition {
+public class TotalCostCondition implements Condition {
 
     private int totalCost;
 
-    public Condition_TotalCost(int totalCost) {
+    TotalCostCondition(int totalCost) {
         this.totalCost = totalCost;
     }
 
     @Override
-    public boolean isSatisfiedConditionals(Check check) {
+    public boolean isSatisfy(Check check) {
         return totalCost <= check.getTotalCost();
     }
 }

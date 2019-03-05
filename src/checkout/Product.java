@@ -4,13 +4,13 @@ public class Product {
     final int price;
     final String name;
     Category category;
-    Brand brand;
+    Trademark trademark;
 
-    public Product(int price, String name, Category category, Brand brand) {
+    public Product(int price, String name, Category category, Trademark trademark) {
         this.price = price;
         this.name = name;
         this.category = category;
-        this.brand = brand;
+        this.trademark = trademark;
     }
 
     public Product(int price, String name, Category category) {

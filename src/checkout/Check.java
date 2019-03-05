@@ -57,9 +57,9 @@ public class Check {
                 .reduce(0, (a, b) -> a + b);
     }
 
-    boolean whetherHaveBrand(Brand brand) {
+    boolean whetherHaveBrand(Trademark trademark) {
         for (int i = 0; i < products.size(); i++) {
-            if (products.get(i).brand == brand)
+            if (products.get(i).trademark == trademark)
                 return true;
         }
         return false;

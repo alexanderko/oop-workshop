@@ -1,10 +1,10 @@
 package checkout;
 
-public class Reward_Discount implements Reward {
+public class DiscountReward implements Reward {
 
     private int discount;
 
-    public Reward_Discount(int discount) {
+    public DiscountReward(int discount) {
         this.discount = discount;
     }
 

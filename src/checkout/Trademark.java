@@ -1,5 +1,5 @@
 package checkout;
 
-public enum Brand {
+public enum Trademark {
     GREEN_VALLEY, UNKNOWN_BRAND
 }

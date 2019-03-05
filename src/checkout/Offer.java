@@ -4,29 +4,29 @@ package checkout;
 import java.time.LocalDate;
 
 public abstract class Offer {
-    private LocalDate expirationDate;
-    private Reward rewardtType;
+    private LocalDate expiresOn;
+    private Reward rewardType;
     private Condition conditionType;
 
-    public Offer(LocalDate expirationDate, Reward rewardType, Condition conditionType) {
-        this.rewardtType = rewardType;
-        this.expirationDate = expirationDate;
+    public Offer(LocalDate expiresOn, Reward rewardType, Condition conditionType) {
+        this.rewardType = rewardType;
+        this.expiresOn = expiresOn;
         this.conditionType = conditionType;
     }
 
     void applyOffer(Check check, LocalDate currentDate) {
-        if (currentDate.isBefore(expirationDate) || currentDate.equals(expirationDate)) {
-            if (isSatisfiedConditionals(check)) {
+        if (currentDate.isBefore(expiresOn) || currentDate.equals(expiresOn)) {
+            if (isSatisfy(check)) {
                 applyReward(check);
             }
         }
     }
 
-    private boolean isSatisfiedConditionals(Check check) {
-        return true;
+    private boolean isSatisfy(Check check) {
+        return conditionType.isSatisfy(check);
     }
 
     private void applyReward(Check check) {
-        rewardtType.applyReward(check);
+        rewardType.applyReward(check);
     }
 }

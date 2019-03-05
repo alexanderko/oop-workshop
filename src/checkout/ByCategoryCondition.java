@@ -1,15 +1,15 @@
 package checkout;
 
-public class Condition_ByCategory implements Condition {
+public class ByCategoryCondition implements Condition {
 
     private Category category;
 
-    public Condition_ByCategory(Category category) {
+    public ByCategoryCondition(Category category) {
         this.category = category;
     }
 
     @Override
-    public boolean isSatisfiedConditionals(Check check) {
+    public boolean isSatisfy(Check check) {
         return check.getCostByCategory(category) != 0;
     }
 }

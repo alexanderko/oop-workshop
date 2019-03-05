@@ -1,10 +1,10 @@
 package checkout;
 
-public class Reward_Flat implements Reward {
+public class FlatReward implements Reward {
     public final int totalCost;
     public final int points;
 
-    public Reward_Flat(int totalCost, int points) {
+    public FlatReward(int totalCost, int points) {
         this.totalCost = totalCost;
         this.points = points;
     }
