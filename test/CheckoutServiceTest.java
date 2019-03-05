@@ -67,7 +67,7 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new Offer(standardExpirationDate, new Reward_Flat(6, 2)));
+        checkoutService.useOffer(new AnyGoodsOffer(standardExpirationDate, 6, 2));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(12));
@@ -77,7 +77,7 @@ public class CheckoutServiceTest {
     void useOffer__whenCostLessThanRequired__doNothing() {
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new Offer(standardExpirationDate, new Reward_Flat(6, 2)));
+        checkoutService.useOffer(new AnyGoodsOffer(standardExpirationDate, 6, 2));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(3));
@@ -89,7 +89,7 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new Offer(standardExpirationDate, new Reward_Factor(Category.MILK, 2)));
+        checkoutService.useOffer(new FactorByCategoryOffer(standardExpirationDate, Category.MILK, 2));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(31));
@@ -103,7 +103,7 @@ public class CheckoutServiceTest {
 
         LocalDate expiredDate = LocalDate.of(2019, 2, 20);
 
-        checkoutService.useOffer(new Offer(expiredDate, new Reward_Factor(Category.MILK, 2)));
+        checkoutService.useOffer(new FactorByCategoryOffer(expiredDate, Category.MILK, 2));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(17));
@@ -117,7 +117,7 @@ public class CheckoutServiceTest {
 
         LocalDate expiredDate = LocalDate.of(2019, 3, 20);
 
-        checkoutService.useOffer(new Offer(expiredDate, new Reward_Factor(Category.MILK, 2)));
+        checkoutService.useOffer(new FactorByCategoryOffer(expiredDate, Category.MILK, 2));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(31));
@@ -131,7 +131,7 @@ public class CheckoutServiceTest {
 
         LocalDate equalExpirationDate = LocalDate.of(2019, 3, 5);
 
-        checkoutService.useOffer(new Offer(equalExpirationDate, new Reward_Factor(Category.MILK, 2)));
+        checkoutService.useOffer(new FactorByCategoryOffer(equalExpirationDate, Category.MILK, 2));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(31));
@@ -144,7 +144,7 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(bred_3);
 
         LocalDate expirationDate = LocalDate.of(2019, 3, 20);
-        checkoutService.useOffer(new Offer(expirationDate, new Reward_Factor(Category.MILK, 2)));
+        checkoutService.useOffer(new FactorByCategoryOffer(expirationDate, Category.MILK, 2));
 
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(milk_7);
