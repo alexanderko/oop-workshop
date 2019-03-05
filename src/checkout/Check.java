@@ -15,6 +15,11 @@ public class Check {
         return totalCost;
     }
 
+    public int getTotalCostWithDiscount(){
+
+        return getTotalCost() - getTotalPoints()/10;
+    }
+
     void addProduct(Product product) {
         products.add(product);
     }
