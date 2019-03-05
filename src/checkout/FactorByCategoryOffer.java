@@ -11,6 +11,10 @@ public class FactorByCategoryOffer extends Offer {
 
     @Override
     public void apply(Check check) {
-
+        if (this instanceof FactorByCategoryOffer) {
+            FactorByCategoryOffer fbOffer = (FactorByCategoryOffer) this;
+            int points = check.getCostByCategory(fbOffer.category);
+            check.addPoints(points * (fbOffer.factor - 1));
+        }
     }
 }

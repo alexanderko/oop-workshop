@@ -11,6 +11,10 @@ public class AnyGoodsOffer extends Offer {
 
     @Override
     public void apply(Check check) {
-
+        if (this instanceof AnyGoodsOffer) {
+            AnyGoodsOffer agOffer = (AnyGoodsOffer) this;
+            if (agOffer.totalCost <= check.getTotalCost())
+                check.addPoints(agOffer.points);
+        }
     }
 }
