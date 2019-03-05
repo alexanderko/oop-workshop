@@ -12,7 +12,7 @@ public class CheckoutService {
     }
 
     public void openCheck() {
-        check = new Check();
+        check = new Check(currentDate);
     }
 
     public void addProduct(Product product) {
@@ -23,12 +23,13 @@ public class CheckoutService {
     }
 
     public Check closeCheck() {
+        check.applyOffers();
         Check closedCheck = check;
         check = null;
         return closedCheck;
     }
 
     public void useOffer(Offer offer) {
-        offer.applyOffer(check, currentDate);
+        check.addOffer(offer);
     }
 }

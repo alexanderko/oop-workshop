@@ -1,11 +1,18 @@
 package checkout;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Check {
     private List<Product> products = new ArrayList<>();
+    private ArrayList<Offer> offers = new ArrayList<>();
+    private LocalDate date;
     private int points = 0;
+
+    public Check(LocalDate date) {
+        this.date = date;
+    }
 
     public int getTotalCost() {
         int totalCost = 0;
@@ -25,6 +32,17 @@ public class Check {
 
     void addPoints(int points) {
         this.points += points;
+    }
+
+    void addOffer(Offer offer) {
+        offers.add(offer);
+    }
+
+    void applyOffers() {
+        for (int i = 0; i < offers.size(); i++) {
+            offers.get(i).applyOffer(this, date);
+            //offer.applyOffer(check, currentDate);
+        }
     }
 
     int getCostByCategory(Category category) {

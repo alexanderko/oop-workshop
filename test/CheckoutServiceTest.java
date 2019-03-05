@@ -12,7 +12,7 @@ public class CheckoutServiceTest {
     private Product milk_7;
     private CheckoutService checkoutService;
     private Product bred_3;
-    private LocalDate standartExpirationDate;
+    private LocalDate standardExpirationDate;
 
     @BeforeEach
     void setUp() {
@@ -22,7 +22,7 @@ public class CheckoutServiceTest {
 
         milk_7 = new Product(7, "Milk", Category.MILK);
         bred_3 = new Product(3, "Bred");
-        standartExpirationDate = LocalDate.of(2100, 10, 1);
+        standardExpirationDate = LocalDate.of(2100, 10, 1);
     }
 
     @Test
@@ -67,7 +67,7 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new AnyGoodsOffer(6, 2, standartExpirationDate));
+        checkoutService.useOffer(new AnyGoodsOffer(6, 2, standardExpirationDate));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(12));
@@ -77,7 +77,7 @@ public class CheckoutServiceTest {
     void useOffer__whenCostLessThanRequired__doNothing() {
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new AnyGoodsOffer(6, 2, standartExpirationDate));
+        checkoutService.useOffer(new AnyGoodsOffer(6, 2, standardExpirationDate));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(3));
@@ -89,7 +89,7 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, standartExpirationDate));
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, standardExpirationDate));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(31));
@@ -129,11 +129,27 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        LocalDate expiredDate = LocalDate.of(2019, 3, 5);
+        LocalDate equalExpirationDate = LocalDate.of(2019, 3, 5);
 
-        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, expiredDate));
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, equalExpirationDate));
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(31));
+    }
+
+    @Test
+    void addProduct__whenOfferIsAlreadyUsed__applyIt() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        LocalDate expirationDate = LocalDate.of(2019, 3, 20);
+        checkoutService.useOffer(new FactorByCategoryOffer(Category.MILK, 2, expirationDate));
+
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(milk_7);
+
+        Check check = checkoutService.closeCheck();
+        assertThat(check.getTotalPoints(), is(59));
     }
 }
