@@ -1,8 +1,5 @@
 package checkout;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class CheckoutService {
 
     private Check check;

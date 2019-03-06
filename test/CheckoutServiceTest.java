@@ -1,7 +1,6 @@
 import checkout.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sun.security.x509.CertAttrSet;
 
 import java.time.LocalDate;
 
@@ -20,8 +19,8 @@ public class CheckoutServiceTest {
         checkoutService = new CheckoutService();
         checkoutService.openCheck();
 
-        milk_7 = new Product(7, "Milk", Category.MILK, Outlet.PEPSI);
-        bred_3 = new Product(3, "Bred", Category.BRED, Outlet.ROSHEN);
+        milk_7 = new Product(7, "Milk", Category.MILK, TradeMark.PEPSI);
+        bred_3 = new Product(3, "Bred", Category.BRED, TradeMark.ROSHEN);
     }
 
     @Test
@@ -47,27 +46,29 @@ public class CheckoutServiceTest {
     @Test
     void useFlatRewardAndConditionByCategory() {
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new Offer(expiredDate, new FlatReward(100), new ConditionByCategory(Category.MILK)));
+        checkoutService.useOffer(new Offer(expiredDate, new FlatReward(100), new ConditionByCategory(Category.MILK, 100)));
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
         Check check = checkoutService.closeCheck();
 
-        assertThat(check.getTotalPoints(), is(117));
+        assertThat(check.getTotalPoints(), is(17));
     }
+
     @Test
     void useFlatRewardAndConditionByOutlet() {
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new Offer(expiredDate, new FlatReward(30), new ConditionByOutlet(Outlet.ROSHEN)));
+        checkoutService.useOffer(new Offer(expiredDate, new FlatReward(30), new ConditionByTradeMark(TradeMark.ROSHEN)));
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(47));
     }
+
     @Test
     void useDiscountRewardAndConditionByOutlet() {
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new Offer(expiredDate, new DiscountReward(50), new ConditionByOutlet(Outlet.ROSHEN)));
+        checkoutService.useOffer(new Offer(expiredDate, new DiscountReward(50), new ConditionByTradeMark(TradeMark.ROSHEN)));
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
         Check check = checkoutService.closeCheck();
@@ -78,7 +79,7 @@ public class CheckoutServiceTest {
     @Test
     void useDiscountRewardAndConditionByOutlet__whenOutletNotFound() {
         checkoutService.addProduct(milk_7);
-        checkoutService.useOffer(new Offer(expiredDate, new DiscountReward(50), new ConditionByOutlet(Outlet.LAYS)));
+        checkoutService.useOffer(new Offer(expiredDate, new DiscountReward(50), new ConditionByTradeMark(TradeMark.LAYS, 5)));
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
         Check check = checkoutService.closeCheck();

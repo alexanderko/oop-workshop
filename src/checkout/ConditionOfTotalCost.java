@@ -7,11 +7,7 @@ public class ConditionOfTotalCost implements Condition {
     }
 
     public boolean checkCondition(Check check) {
-        if (check.getTotalCost() < totalCost) {
-            return false;
-        }else{
-            return true;
-        }
+        return totalCost <= check.getTotalCost();
     }
     public int getCostForCondition(Check check) {
         return check.getTotalPrice();
