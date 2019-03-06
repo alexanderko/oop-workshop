@@ -13,8 +13,10 @@ public class ByTotalCost implements Condition {
 
     @Override
     public boolean checkCondition(Check check) {
-        return requiredAmount < check.getTotalCost();
+        return this.requiredAmount < check.getTotalCost();
     }
+
+
 
 }
 

@@ -199,7 +199,7 @@ class CheckoutServiceTest {
     }
 
     @Test
-    void userOffer__useSeveralOffers__secondDoesntWorks() {
+    void userOffer__useSeveralOffers__secondDoesNotWorks() {
         checkoutService.addProduct(milk_7);
 
         specialOffer = new Offer(futureDate, new FlatReward(10), new ByCategory(Category.MILK));
