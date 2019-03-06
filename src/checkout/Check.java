@@ -2,16 +2,26 @@ package checkout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class Check {
     private List<Product> products = new ArrayList<>();
+    private List<Offer> offers = new ArrayList<>();
     private int points = 0;
+    private double discount = 0;
 
-    public int getTotalCost() {
-        int totalCost = 0;
+    public int getTotalPrice() {
+        int totalPrice = 0;
         for (Product product : this.products) {
-            totalCost += product.price;
+            totalPrice += product.price;
         }
+        return totalPrice;
+    }
+
+    public double getTotalCost() {
+        double totalCost = 0;
+        totalCost += getTotalPrice();
+        totalCost -= discount;
         return totalCost;
     }
 
@@ -20,17 +30,31 @@ public class Check {
     }
 
     public int getTotalPoints() {
-        return getTotalCost() + points;
+        return getTotalPrice() + points;
     }
 
     void addPoints(int points) {
         this.points += points;
     }
 
-    int getCostByCategory(Category category) {
+    void useOffers(Check check) {
+        for (Offer offer : offers) {
+            offer.apply(check);
+        }
+    }
+
+    void addOffer(Offer offer) {
+        offers.add(offer);
+    }
+
+    int getSubCost(Predicate<Product> predicate) {
         return products.stream()
-                .filter(p -> p.category == category)
+                .filter(predicate)
                 .mapToInt(p -> p.price)
                 .reduce(0, (a, b) -> a + b);
+    }
+
+    void addDiscount(double discount) {
+        this.discount += discount;
     }
 }
