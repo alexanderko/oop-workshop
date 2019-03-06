@@ -6,10 +6,12 @@ public class ConditionByTradeMark implements Condition {
     TradeMark tradeMark;
     int totalCost;
     Predicate<Product> productPredicate = p -> p.tradeMark == tradeMark;
+
     public ConditionByTradeMark(TradeMark tradeMark, int totalCost) {
         this.tradeMark = tradeMark;
         this.totalCost = totalCost;
     }
+
     public ConditionByTradeMark(TradeMark tradeMark) {
         this.tradeMark = tradeMark;
         this.totalCost = 0;

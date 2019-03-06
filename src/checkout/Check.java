@@ -9,6 +9,7 @@ public class Check {
     private List<Offer> offers = new ArrayList<>();
     private int points = 0;
     private double discount = 0;
+
     public int getTotalPrice() {
         int totalPrice = 0;
         for (Product product : this.products) {
@@ -16,12 +17,14 @@ public class Check {
         }
         return totalPrice;
     }
+
     public double getTotalCost() {
         double totalCost = 0;
         totalCost += getTotalPrice();
         totalCost -= discount;
         return totalCost;
     }
+
     void addProduct(Product product) {
         products.add(product);
     }
@@ -35,7 +38,7 @@ public class Check {
     }
 
     void useOffers(Check check) {
-        for (Offer offer: offers) {
+        for (Offer offer : offers) {
             offer.apply(check);
         }
     }
@@ -48,8 +51,9 @@ public class Check {
         return products.stream()
                 .filter(predicate)
                 .mapToInt(p -> p.price)
-                .reduce(0, (a,b) -> a + b);
+                .reduce(0, (a, b) -> a + b);
     }
+
     void addDiscount(double discount) {
         this.discount += discount;
     }
