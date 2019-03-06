@@ -1,6 +1,6 @@
 package checkout;
 
-public enum Outlet {
+public enum TradeMark {
     PEPSI,
     ROSHEN,
     LAYS
