@@ -16,7 +16,5 @@ public class ByTotalCost implements Condition {
         return this.requiredAmount < check.getTotalCost();
     }
 
-
-
 }
 
