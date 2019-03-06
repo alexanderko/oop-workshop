@@ -20,6 +20,7 @@ public class CheckoutServiceTest {
     private CheckoutService checkoutService;
     private Product bred_3;
     private Offer specialOffer;
+    private LocalDate futureDate;
 
     @BeforeEach
     void setUp() {
@@ -28,6 +29,8 @@ public class CheckoutServiceTest {
 
         milk_7 = new Product(7, "Milk", Category.MILK);
         bred_3 = new Product(3, "Bred");
+
+        futureDate = LocalDate.now().plusYears(1);
     }
 
     @Test
@@ -67,12 +70,14 @@ public class CheckoutServiceTest {
         assertThat(check.getTotalPoints(), is(10));
     }
 
+
+
     @Test
     void useOffer__addOfferPoints() {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        specialOffer = new Offer(new AnyGoodsReward(6, 2));
+        specialOffer = new Offer(futureDate, new AnyGoodsReward(6, 2));
 
         checkoutService.useOffer(specialOffer);
         Check check = checkoutService.closeCheck();
@@ -84,7 +89,7 @@ public class CheckoutServiceTest {
     void useOffer__whenCostLessThanRequired__doNothing() {
         checkoutService.addProduct(bred_3);
 
-        specialOffer = new Offer(new AnyGoodsReward(6, 2));
+        specialOffer = new Offer(futureDate, new AnyGoodsReward(6, 2));
 
         checkoutService.useOffer(specialOffer);
         Check check = checkoutService.closeCheck();
@@ -97,7 +102,9 @@ public class CheckoutServiceTest {
     @Test
     void userOffer__useOfferWhileBuying__FlatReward() {
         checkoutService.addProduct(milk_7);
-        specialOffer = new Offer(new FlatReward(10), new ByTotalCost(15));
+        specialOffer = new Offer(futureDate,
+                       new FlatReward(10),
+                       new ByTotalCost(15));
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
         checkoutService.useOffer(specialOffer);
@@ -111,7 +118,7 @@ public class CheckoutServiceTest {
     void userOffer__FlatOfferReward__ByTotalCost() {
         checkoutService.addProduct(milk_7);
 
-        specialOffer = new Offer(new FlatReward(10), new ByTotalCost(5));
+        specialOffer = new Offer(futureDate, new FlatReward(10), new ByTotalCost(5));
         checkoutService.useOffer(specialOffer);
 
         Check check = checkoutService.closeCheck();
@@ -123,7 +130,7 @@ public class CheckoutServiceTest {
     void userOffer__FlatOfferReward__ByCategory() {
         checkoutService.addProduct(milk_7);
 
-        specialOffer = new Offer(new FlatReward(10), new ByCategory(Category.MILK));
+        specialOffer = new Offer(futureDate, new FlatReward(10), new ByCategory(Category.MILK));
         checkoutService.useOffer(specialOffer);
 
         Check check = checkoutService.closeCheck();
@@ -137,7 +144,9 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        specialOffer = new Offer(new FactorByCategoryReward(Category.MILK, 2), new ByCategory(Category.MILK, 10));
+        specialOffer = new Offer(futureDate,
+                                 new FactorByCategoryReward(Category.MILK, 2),
+                                 new ByCategory(Category.MILK, 10));
         checkoutService.useOffer(specialOffer);
 
         Check check = checkoutService.closeCheck();
@@ -151,7 +160,9 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        specialOffer = new Offer(new FactorByCategoryReward(Category.MILK, 2), new ByTotalCost(10));
+        specialOffer = new Offer(futureDate,
+                                 new FactorByCategoryReward(Category.MILK, 2),
+                                 new ByTotalCost(10));
         checkoutService.useOffer(specialOffer);
 
         Check check = checkoutService.closeCheck();
@@ -164,7 +175,7 @@ public class CheckoutServiceTest {
         Product beef_100 = new Product(100, "beef", Category.MEET);
         checkoutService.addProduct(beef_100);
 
-        specialOffer = new Offer(new DiscountReward(20), new ByCategory(Category.MEET));
+        specialOffer = new Offer(futureDate, new DiscountReward(20), new ByCategory(Category.MEET));
         checkoutService.useOffer(specialOffer);
 
         Check check = checkoutService.closeCheck();
@@ -178,34 +189,15 @@ public class CheckoutServiceTest {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
-        specialOffer = new Offer(new FactorByCategoryReward(Category.MILK, 2),
-                                 new ByTotalCost(10),
-                                 LocalDate.of(2000, Month.AUGUST, 15));
+        specialOffer = new Offer(LocalDate.now().minusYears(1),
+                                 new FactorByCategoryReward(Category.MILK, 2),
+                                 new ByTotalCost(10));
 
         checkoutService.useOffer(specialOffer);
 
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(17));
-    }
-
-    @Test
-    void userOffer__checkExpirationDate__NotExpired() {
-        checkoutService.addProduct(milk_7);
-        checkoutService.addProduct(milk_7);
-        checkoutService.addProduct(bred_3);
-
-        specialOffer = new Offer(new FactorByCategoryReward(Category.MILK, 2),
-                new ByTotalCost(10),
-                LocalDate.of(2020, Month.AUGUST, 15));
-
-        specialOffer.setDateOfCheck(LocalDate.of(1995, Month.MARCH, 5));
-
-        checkoutService.useOffer(specialOffer);
-
-        Check check = checkoutService.closeCheck();
-
-        assertThat(check.getTotalPoints(), is(31));
     }
 
 }

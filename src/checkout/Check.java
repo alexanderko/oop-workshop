@@ -1,13 +1,14 @@
 package checkout;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Check {
     private List<Product> products = new ArrayList<>();
     private int points = 0;
-
     private int discount = 0;
+    private LocalDate dateOfCheck = LocalDate.now();
 
     public int getTotalCost() {
         int totalCost = 0;
@@ -42,5 +43,9 @@ public class Check {
 
     public void setDiscount(int discount) {
         this.discount = discount;
+    }
+
+    public LocalDate getDateOfCheck() {
+        return this.dateOfCheck;
     }
 }
