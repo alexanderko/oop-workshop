@@ -1,20 +1,19 @@
 import checkout.*;
 import checkout.offer_conditions.ByCategory;
 import checkout.offer_conditions.ByTotalCost;
-import checkout.offer_rewards.AnyGoodsReward;
 import checkout.offer_rewards.DiscountReward;
 import checkout.offer_rewards.FactorByCategoryReward;
 import checkout.offer_rewards.FlatReward;
+import com.sun.javaws.exceptions.OfflineLaunchException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.time.Month;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class CheckoutServiceTest {
+class CheckoutServiceTest {
 
     private Product milk_7;
     private CheckoutService checkoutService;
@@ -70,35 +69,6 @@ public class CheckoutServiceTest {
         assertThat(check.getTotalPoints(), is(10));
     }
 
-
-
-    @Test
-    void useOffer__addOfferPoints() {
-        checkoutService.addProduct(milk_7);
-        checkoutService.addProduct(bred_3);
-
-        specialOffer = new Offer(futureDate, new AnyGoodsReward(6, 2));
-
-        checkoutService.useOffer(specialOffer);
-        Check check = checkoutService.closeCheck();
-
-        assertThat(check.getTotalPoints(), is(12));
-    }
-
-    @Test
-    void useOffer__whenCostLessThanRequired__doNothing() {
-        checkoutService.addProduct(bred_3);
-
-        specialOffer = new Offer(futureDate, new AnyGoodsReward(6, 2));
-
-        checkoutService.useOffer(specialOffer);
-        Check check = checkoutService.closeCheck();
-
-        assertThat(check.getTotalPoints(), is(3));
-    }
-
-
-
     @Test
     void userOffer__useOfferWhileBuying__FlatReward() {
         checkoutService.addProduct(milk_7);
@@ -112,6 +82,19 @@ public class CheckoutServiceTest {
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(27));
+    }
+
+    @Test
+    void useOffer__FlatOfferReward() {
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        specialOffer = new Offer(futureDate, new FlatReward( 2));
+
+        checkoutService.useOffer(specialOffer);
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(12));
     }
 
     @Test
@@ -199,5 +182,36 @@ public class CheckoutServiceTest {
 
         assertThat(check.getTotalPoints(), is(17));
     }
+
+    @Test
+    void userOffer__useSeveralOffers__secondWorks() {
+        checkoutService.addProduct(milk_7);
+
+        specialOffer = new Offer(futureDate, new FlatReward(10), new ByCategory(Category.MILK));
+        checkoutService.useOffer(specialOffer);
+
+        Offer offerTwo = new Offer(futureDate, new FlatReward(10), new ByTotalCost(6));
+        checkoutService.useOffer(offerTwo);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(27));
+    }
+
+    @Test
+    void userOffer__useSeveralOffers__secondDoesntWorks() {
+        checkoutService.addProduct(milk_7);
+
+        specialOffer = new Offer(futureDate, new FlatReward(10), new ByCategory(Category.MILK));
+        checkoutService.useOffer(specialOffer);
+
+        Offer offerTwo = new Offer(futureDate, new FlatReward(10), new ByTotalCost(26));
+        checkoutService.useOffer(offerTwo);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(17));
+    }
+
 
 }

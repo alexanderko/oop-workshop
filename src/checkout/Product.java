@@ -1,7 +1,7 @@
 package checkout;
 
 public class Product {
-    int price;
+    final int price;
     final String name;
     Category category;
 

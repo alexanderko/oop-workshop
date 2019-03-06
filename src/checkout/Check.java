@@ -45,7 +45,7 @@ public class Check {
         this.discount = discount;
     }
 
-    public LocalDate getDateOfCheck() {
+    LocalDate getDateOfCheck() {
         return this.dateOfCheck;
     }
 }

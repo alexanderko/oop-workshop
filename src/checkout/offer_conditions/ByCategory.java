@@ -21,6 +21,6 @@ public class ByCategory implements Condition {
 
     @Override
     public boolean checkCondition(Check check) {
-        return (check.getCostByCategory(this.requiredCategory) > this.requiredAmount);
+        return (this.requiredAmount < check.getCostByCategory(this.requiredCategory));
     }
 }

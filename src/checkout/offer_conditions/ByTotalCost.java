@@ -3,7 +3,7 @@ package checkout.offer_conditions;
 import checkout.Check;
 import checkout.offer_interfaces.Condition;
 
-public class ByTotalCost implements Condition{
+public class ByTotalCost implements Condition {
 
     private int requiredAmount;
 
@@ -13,7 +13,7 @@ public class ByTotalCost implements Condition{
 
     @Override
     public boolean checkCondition(Check check) {
-        return check.getTotalCost() > requiredAmount;
+        return requiredAmount < check.getTotalCost();
     }
 
 }
