@@ -9,15 +9,21 @@ import static org.hamcrest.Matchers.is;
 
 public class CheckoutServiceTest {
 
-    private Product milk_7;
     private CheckoutService checkoutService;
+
+    private Product milk_7;
     private Product bred_3;
     private Product paper_4_by_Lasca;
+    private Product water_6;
+
     private Trademark lasca;
+
     private LocalDate nextDay;
     private LocalDate previousDay;
+
     private Offer factorPointsByCategoryExpired;
     private Offer factorPointsByCategoryNotExpired;
+    private Offer factorPointsByTrademark;
 
 
     @BeforeEach
@@ -28,11 +34,13 @@ public class CheckoutServiceTest {
         lasca = new Trademark("Lasca");
         milk_7 = new Product(7, "Milk", Category.MILK);
         bred_3 = new Product(3, "Bred");
+        water_6 = new Product(6, "Water", Category.WATER);
         paper_4_by_Lasca = new Product(4, "Paper", null, lasca);
         nextDay = LocalDate.now().plusDays(1);
         previousDay = LocalDate.now().minusDays(1);
         factorPointsByCategoryExpired = new Offer(Rewards.factorPointsByCategory(2, Category.MILK), previousDay);
         factorPointsByCategoryNotExpired = new Offer(Rewards.factorPointsByCategory(2, Category.MILK), nextDay);
+        factorPointsByTrademark = new Offer(Rewards.factorPointsByTrademark(2, lasca), nextDay);
     }
 
     @Test
@@ -175,14 +183,14 @@ public class CheckoutServiceTest {
 
     @Test
     void hasTrademarkAndDiscount__applyOffer() {
-        checkoutService.useOffer(new Offer(Conditions.hasTrademark(lasca), Rewards.discount(50), nextDay));
+        checkoutService.useOffer(new Offer(Conditions.hasTrademark(lasca), Rewards.discountForTrademark(50, lasca), nextDay));
         checkoutService.addProduct(paper_4_by_Lasca);
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(bred_3);
 
         Check check = checkoutService.closeCheck();
 
-        assertThat(check.getTotalCost(), is(7));
+        assertThat(check.getTotalCost(), is(7 + 3 + 4 / 2));
     }
 
     @Test
@@ -209,5 +217,30 @@ public class CheckoutServiceTest {
         Check check = checkoutService.closeCheck();
 
         assertThat(check.getTotalPoints(), is(14 * 2 + 20));
+    }
+
+    @Test
+    void factorPointsByTrademark__applyReward() {
+        checkoutService.useOffer(factorPointsByTrademark);
+        checkoutService.addProduct(paper_4_by_Lasca);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(bred_3);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalPoints(), is(7 + 3 + 4 * 2));
+    }
+
+    @Test
+    void discountByCategory__applyReward() {
+        checkoutService.useOffer(new Offer(Conditions.hasTrademark(lasca), Rewards.discountByCategory(50, Category.WATER), nextDay));
+        checkoutService.addProduct(paper_4_by_Lasca);
+        checkoutService.addProduct(milk_7);
+        checkoutService.addProduct(water_6);
+
+        Check check = checkoutService.closeCheck();
+
+        assertThat(check.getTotalCost(), is(4 + 7 + 6 / 2));
+
     }
 }

@@ -2,20 +2,24 @@ package checkout;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 
 public class Check {
     private List<Product> products = new ArrayList<>();
     private List<Offer> offers = new ArrayList<>();
+    private Map<Integer, Predicate<Product>> discounts = new HashMap<>();
     private int points = 0;
-    private int discount = 0;
 
     public int getTotalCost() {
         int totalCost = 0;
         for (Product product : this.products) {
             totalCost += product.price;
         }
-        return (int) (totalCost - (totalCost * discount / 100.0));
+        return calculateDiscounts(totalCost);
     }
 
     void addProduct(Product product) {
@@ -30,9 +34,10 @@ public class Check {
         this.points += points;
     }
 
-    int getCostByCategory(Category category) {
+
+    int getCostBy(Predicate<Product> predicate) {
         return products.stream()
-                .filter(p -> p.category == category)
+                .filter(predicate)
                 .mapToInt(p -> p.price)
                 .reduce(0, (a, b) -> a + b);
     }
@@ -52,7 +57,13 @@ public class Check {
         return new ArrayList<>(products);
     }
 
-    public void addDiscount(int discount) {
-        this.discount += discount;
+    void addDiscountFor(int percent, Predicate<Product> predicate) {
+        discounts.put(percent, predicate);
+    }
+
+    private int calculateDiscounts(int totalCost) {
+        AtomicInteger totalCostAtomic = new AtomicInteger(totalCost);
+        discounts.forEach((percent, predicate) -> totalCostAtomic.addAndGet(- getCostBy(predicate) * percent / 100));
+        return totalCostAtomic.get();
     }
 }
