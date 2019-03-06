@@ -1,8 +1,12 @@
 package checkout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CheckoutService {
 
     private Check check;
+    private List<Offer> offers = new ArrayList<>();
 
     public void openCheck() {
         check = new Check();
@@ -16,24 +20,26 @@ public class CheckoutService {
     }
 
     public Check closeCheck() {
+        useAllOffer();
         Check closedCheck = check;
         check = null;
         return closedCheck;
     }
 
-    public Check closeCheckAndUseOffer(){
-        useOffer(new AnyGoodsOffer(6,2));
-        useOffer(new FactorByCategoryOffer(Category.MILK, 2));
-        useOffer(new SpecificBrandOffer(Brand.VOLOSHKOVE_POLE, 50));
-        Check closedCheck = closeCheck();
-        return  closedCheck;
+    private void useAllOffer(){
+        if(this.offers.size()!=0) this.offers.forEach(offer ->{
+            if(isOfferavAilable(offer)) offer.apply(check);
+        });
     }
 
-    public void useOffer(Offer offer) {
-        offer.apply(check);
-    }
+    public void useOffer(Offer offer){
+        if(check != null)
+            this.offers.add(offer);
 
-    public void useOfferWithStrategy(OfferWithStrategy offer){
-       offer.applyStrategy(check);
+    }
+    public boolean isOfferavAilable(Offer ofer){
+        if (ofer.getExpirationDate().isAfter(check.getTodayDate()))
+            return true;
+        else return false;
     }
 }

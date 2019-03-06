@@ -1,5 +1,7 @@
 package checkout;
 
+import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +9,7 @@ public class Check {
     private List<Product> products = new ArrayList<>();
     private int points = 0;
     private int discount = 0;
+    private LocalDate todayDate = LocalDate.of(2019, 3, 1);
 
     public int getTotalCost() {
         int totalCost = 0;
@@ -50,11 +53,11 @@ public class Check {
         this.discount = discount;
     }
 
-    public int getDiscount(){
-        return discount;
-    }
-
     public List<Product> getProducts() {
         return products;
+    }
+
+    public LocalDate getTodayDate() {
+        return todayDate;
     }
 }

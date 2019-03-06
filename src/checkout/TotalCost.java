@@ -1,8 +1,17 @@
 package checkout;
 
-public class TotalCost  implements Condition {
+public class TotalCost implements Condition {
+    int totalCost;
+
+    public TotalCost(int totalCost){
+        setTotalCost(totalCost);
+    }
     @Override
     public boolean checkCondition(Check check) {
-        return (10 <= check.getTotalCost());
+        return (totalCost <= check.getTotalCost());
+    }
+
+    public void setTotalCost(int totalCost) {
+        this.totalCost = totalCost;
     }
 }
