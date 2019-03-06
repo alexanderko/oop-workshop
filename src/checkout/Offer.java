@@ -14,9 +14,7 @@ public class Offer {
     }
 
     public Offer(Reward reward , Condition condition){
-        this.condition = condition;
-        this.reward = reward;
-        this.expirationDate = LocalDate.of(2019, 3, 7);
+        this(reward, condition, LocalDate.of(2019, 3, 7));
     }
 
     public void apply(Check check){

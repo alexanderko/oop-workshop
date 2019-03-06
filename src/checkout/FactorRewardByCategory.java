@@ -11,7 +11,7 @@ public class FactorRewardByCategory implements Reward {
     @Override
     public void apply(Check check){
         int points = check.getCostByCategory(category);
-        check.addPoints(points*(factor-1));
+        check.addPoints(points * (factor-1));
     }
 
     public void setFactor(int factor){
