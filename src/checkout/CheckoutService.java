@@ -9,6 +9,7 @@ public class CheckoutService {
     private List<Offer> offers = new ArrayList<>();
 
     public void openCheck() {
+        offers = new ArrayList<>();
         check = new Check();
     }
 
@@ -26,20 +27,13 @@ public class CheckoutService {
         return closedCheck;
     }
 
-    private void useAllOffer(){
-        if(this.offers.size()!=0) this.offers.forEach(offer ->{
-            if(isOfferavAilable(offer)) offer.apply(check);
-        });
+    private void useAllOffer() {
+        if(this.offers.size()!=0) this.offers.forEach(offer ->
+            offer.apply(check));
     }
 
-    public void useOffer(Offer offer){
+    public void useOffer(Offer offer) {
         if(check != null)
             this.offers.add(offer);
-
-    }
-    public boolean isOfferavAilable(Offer ofer){
-        if (ofer.getExpirationDate().isAfter(check.getTodayDate()))
-            return true;
-        else return false;
     }
 }

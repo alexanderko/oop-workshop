@@ -6,6 +6,7 @@ public class TotalCost implements Condition {
     public TotalCost(int totalCost){
         setTotalCost(totalCost);
     }
+
     @Override
     public boolean checkCondition(Check check) {
         return (totalCost <= check.getTotalCost());

@@ -10,7 +10,7 @@ public class CheckoutServiceTest {
     private Product milk_7;
     private CheckoutService checkoutService;
     private Product bred_3;
-    private Product milk_WithBrand;
+    private Product milk_7_WithBrand;
 
     @BeforeEach
     void setUp() {
@@ -19,7 +19,7 @@ public class CheckoutServiceTest {
 
         milk_7 = new Product(7, "Milk", Category.MILK);
         bred_3 = new Product(3, "Bred");
-        milk_WithBrand = new Product(7, "Milk", Category.MILK, Brand.VOLOSHKOVE_POLE);
+        milk_7_WithBrand = new Product(7, "Milk", Category.MILK, Brand.VOLOSHKOVE_POLE);
     }
 
     @Test
@@ -57,10 +57,11 @@ public class CheckoutServiceTest {
         assertThat(check.getTotalPoints(), is(10));
     }
 
-   @Test
-    void useOffer_whenCheckClose(){
-        checkoutService.useOffer(new Offer(new FlatReward(20), new TotalCost(10)));
-        checkoutService.useOffer(new Offer(new FactorRewardByCategory(2, Category.MILK), new ByCategory(Category.MILK)));
+    @Test
+    void useOffer__whenCheckClose() {
+        checkoutService.useOffer(new Offer(new FlatReward(20), new TotalCost(10), LocalDate.now().plusDays(1)));
+        checkoutService.useOffer(new Offer(new FactorRewardByCategory(2, Category.MILK),
+                new ByCategory(Category.MILK), LocalDate.now().plusDays(1)));
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct((bred_3));
         checkoutService.addProduct(milk_7);
@@ -68,73 +69,79 @@ public class CheckoutServiceTest {
         assertThat(check.getTotalPoints(), is(51));
     }
 
-
     @Test
-    void isOfferAvaliable(){
+    void isOfferAvailable__ifTimeForOffersEnded__doNothing() {
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct(milk_7);
         checkoutService.addProduct((bred_3));
-        Offer offer = new Offer(new FlatReward(20), new TotalCost(10), LocalDate.of(2018, 2, 3));
+        Offer offer = new Offer(new FlatReward(20), new TotalCost(10),
+                LocalDate.now().minusDays(1));
         checkoutService.useOffer(offer);
         Check check = checkoutService.closeCheck();
         assertThat(check.getTotalPoints(), is(17));
     }
 
     @Test
-    void useOffer_Strategy_TotalCost(){
-        checkoutService.addProduct(milk_WithBrand);
-        checkoutService.addProduct(milk_WithBrand);
-        Offer offer = new Offer(new FlatReward(20), new TotalCost(10));
+    void useOffer__addOfferPoints() {
+        checkoutService.addProduct(milk_7_WithBrand);
+        checkoutService.addProduct(milk_7_WithBrand);
+        Offer offer = new Offer(new FlatReward(20), new TotalCost(10),
+                LocalDate.now().plusDays(1));
         checkoutService.useOffer(offer);
         Check check = checkoutService.closeCheck();
         assertThat(check.getTotalPoints(), is(34));
     }
     @Test
-    void useOffer_Strategy_TotalCost_Whan_Cost_Less_10(){
+    void useOffer__whenCostLessThanRequired__doNothing() {
         checkoutService.addProduct(bred_3);
         checkoutService.addProduct(bred_3);
         checkoutService.addProduct(bred_3);
-        Offer offer = new Offer(new FlatReward(20), new TotalCost(10));
+        Offer offer = new Offer(new FlatReward(20), new TotalCost(10),
+                LocalDate.now().plusDays(1));
         checkoutService.useOffer(offer);
         Check check = checkoutService.closeCheck();
         assertThat(check.getTotalPoints(), is(9));
     }
 
     @Test
-    void useOffer_Strategy_ByCategory(){
-        checkoutService.addProduct(milk_WithBrand);
-        checkoutService.addProduct(milk_WithBrand);
-        Offer offer = new Offer(new FactorRewardByCategory(2, Category.MILK), new ByCategory(Category.MILK));
+    void useOffer__factorByCategory() {
+        checkoutService.addProduct(milk_7_WithBrand);
+        checkoutService.addProduct(milk_7_WithBrand);
+        Offer offer = new Offer(new FactorRewardByCategory(2, Category.MILK),
+                new ByCategory(Category.MILK), LocalDate.now().plusDays(1));
         checkoutService.useOffer(offer);
         Check check = checkoutService.closeCheck();
         assertThat(check.getTotalPoints(), is(28));
     }
 
     @Test
-    void useOffer_Strategy_ByCategory_Whan_Category_Else(){
+    void useOffer__whenCategoryAbsent__doNothing() {
         checkoutService.addProduct(bred_3);
         checkoutService.addProduct(bred_3);
-        Offer offer = new Offer(new FactorRewardByCategory(2, Category.MILK), new ByCategory(Category.MILK));
+        Offer offer = new Offer(new FactorRewardByCategory(2, Category.MILK),
+                new ByCategory(Category.MILK), LocalDate.now().plusDays(1));
         checkoutService.useOffer(offer);
         Check check = checkoutService.closeCheck();
         assertThat(check.getTotalPoints(), is(6));
     }
 
     @Test
-    void useOffer_Strategy_ByBrand(){
-        checkoutService.addProduct(milk_WithBrand);
-        checkoutService.addProduct(milk_WithBrand);
-        Offer offer = new Offer(new DiscountByBrand(0.5, Brand.VOLOSHKOVE_POLE), new ByBrand(Brand.VOLOSHKOVE_POLE));
+    void useOffer__discountByBrand() {
+        checkoutService.addProduct(milk_7_WithBrand);
+        checkoutService.addProduct(milk_7_WithBrand);
+        Offer offer = new Offer(new DiscountByBrand(0.5, Brand.VOLOSHKOVE_POLE),
+                new ByBrand(Brand.VOLOSHKOVE_POLE), LocalDate.now().plusDays(1));
         checkoutService.useOffer(offer);
         Check check = checkoutService.closeCheck();
         assertThat(check.getTotalCostWithDiscount(), is(7));
     }
 
     @Test
-    void useOffer_Strategy_When_No_Brand(){
+    void useOffer__whenBrandAbsent__doNothing() {
         checkoutService.addProduct(bred_3);
         checkoutService.addProduct(milk_7);
-        Offer offer = new Offer(new DiscountByBrand(0.5, Brand.VOLOSHKOVE_POLE), new ByBrand(Brand.VOLOSHKOVE_POLE));
+        Offer offer = new Offer(new DiscountByBrand(0.5, Brand.VOLOSHKOVE_POLE),
+                new ByBrand(Brand.VOLOSHKOVE_POLE), LocalDate.now().plusDays(1));
         checkoutService.useOffer(offer);
         Check check = checkoutService.closeCheck();
         assertThat(check.getTotalCostWithDiscount(), is(10));

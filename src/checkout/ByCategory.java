@@ -1,15 +1,16 @@
 package checkout;
 
-public class ByCategory implements Condition{
+public class ByCategory implements Condition {
     Category category;
 
-    public ByCategory(Category category){
+    public ByCategory(Category category) {
         setCategory(category);
     }
+
     @Override
-    public boolean checkCondition(Check check){
+    public boolean checkCondition(Check check) {
         boolean marker = false;
-        for(Product p : check.getProducts()){
+        for(Product p : check.getProducts()) {
             if (p.category == category) marker = true;
         }
         return marker;
