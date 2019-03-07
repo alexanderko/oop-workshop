@@ -1,8 +1,14 @@
 package checkout;
 
+import com.sun.javaws.exceptions.OfflineLaunchException;
+
+import java.util.ArrayList;
+
 public class CheckoutService {
 
     private Check check;
+
+    private ArrayList<Offer> currentOffers = new ArrayList<>();
 
     public void openCheck() {
         check = new Check();
@@ -16,23 +22,20 @@ public class CheckoutService {
     }
 
     public Check closeCheck() {
+        if (currentOffers.size() >= 1) {
+            this.currentOffers.forEach(item -> {
+                if (item.isOfferValid(check))
+                    item.applyOffer(check);
+            });
+        }
         Check closedCheck = check;
         check = null;
         return closedCheck;
     }
 
     public void useOffer(Offer offer) {
-        offer.apply(check);
-        if (offer instanceof FactorByCategoryOffer) {
-            FactorByCategoryOffer fbOffer = (FactorByCategoryOffer) offer;
-            int points = check.getCostByCategory(fbOffer.category);
-            check.addPoints(points * (fbOffer.factor - 1));
-        } else {
-            if (offer instanceof AnyGoodsOffer) {
-                AnyGoodsOffer agOffer = (AnyGoodsOffer) offer;
-                if (agOffer.totalCost <= check.getTotalCost())
-                    check.addPoints(agOffer.points);
-            }
-        }
+        this.currentOffers.add(offer);
     }
+
+
 }

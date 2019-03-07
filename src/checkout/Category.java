@@ -1,5 +1,8 @@
 package checkout;
 
 public enum Category {
-    MILK
+    MILK,
+    MEET,
+    FRUIT,
+    VEGETABLE
 }
